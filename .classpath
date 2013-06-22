@@ -145,7 +145,6 @@
 	<classpathentry kind="src" path="framework/appserver/src"/>
 	<classpathentry kind="src" path="framework/base/build/gen-src/javacc"/>
 	<classpathentry excluding="org/ofbiz/base/config/CoberturaInstrumenter.java" kind="src" path="framework/base/src"/>
-	<classpathentry kind="src" path="framework/bi/src"/>
 	<classpathentry kind="src" path="framework/birt/src"/>
 	<classpathentry kind="src" path="framework/catalina/src"/>
 	<classpathentry kind="src" path="framework/common/src"/>
