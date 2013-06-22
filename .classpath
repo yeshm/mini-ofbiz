@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="framework/base/lib/ant-1.8.3.jar"/>
 	<classpathentry kind="lib" path="framework/base/lib/ant-junit-1.8.3.jar"/>
@@ -166,5 +165,6 @@
 	<classpathentry kind="src" path="framework/webtools/src"/>
 	<classpathentry kind="src" path="framework/widget/src"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry kind="con" path="GROOVY_SUPPORT"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
