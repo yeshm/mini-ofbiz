@@ -611,6 +611,7 @@ public class FindServices {
         Integer maxRows = (Integer) context.get("maxRows");
         maxRows = maxRows != null ? maxRows : -1;
         Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
         // Retrieve entities  - an iterator over all the values
         EntityListIterator listIt = null;
         int listSize = 0;

@@ -144,7 +144,7 @@ under the License.
             <property name="scheme" value="http"/>
             <property name="secure" value="false"/>
             <property name="URIEncoding" value="UTF-8"/>
-            <property name="useBodyEncodingForURI" value="false"/>
+            <property name="useBodyEncodingForURI" value="true"/>
             <property name="xpoweredBy" value="true"/>
             <!-- AJP/13 connector attributes -->
             <property name="address" value="0.0.0.0"/>
@@ -170,7 +170,7 @@ under the License.
             <property name="scheme" value="http"/>
             <property name="secure" value="false"/>
             <property name="URIEncoding" value="UTF-8"/>
-            <property name="useBodyEncodingForURI" value="false"/>
+            <property name="useBodyEncodingForURI" value="true"/>
             <property name="xpoweredBy" value="true"/>
             <!-- HTTP connector attributes -->
             <property name="acceptCount" value="10"/>
@@ -208,7 +208,7 @@ under the License.
             <property name="scheme" value="https"/>
             <property name="secure" value="true"/>
             <property name="URIEncoding" value="UTF-8"/>
-            <property name="useBodyEncodingForURI" value="false"/>
+            <property name="useBodyEncodingForURI" value="true"/>
             <property name="xpoweredBy" value="true"/>
             <!-- HTTP connector attributes -->
             <property name="acceptCount" value="10"/>

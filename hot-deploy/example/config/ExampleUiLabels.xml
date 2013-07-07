@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <property key="ExampleApplication">
+        <value xml:lang="en">Example Application</value>
+        <value xml:lang="zh">Example应用程序</value>
+    </property>
+    <property key="ExampleCompanyName">
+        <value xml:lang="en">OFBiz: Example</value>
+    </property>
+    <property key="ExampleCompanySubtitle">
+        <value xml:lang="en">Part of the Open For Business Family of Open Source Software</value>
+        <value xml:lang="it">Un modulo della famiglia di software open source Open For Business</value>
+        <value xml:lang="zh">开源软件OFBiz的组成部分</value>
+    </property>
+    <property key="ExampleViewPermissionError">
+        <value xml:lang="en">You are not allowed to view this page.</value>
+        <value xml:lang="zh">不允许你浏览这个页面。</value>
+    </property>
+</resource>

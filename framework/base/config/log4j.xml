@@ -134,6 +134,17 @@
             <param name="ConversionPattern" value="%d (%t) [%24F:%-3L:%-5p]%x %m%n"/>
         </layout>
     </appender>
+    
+    <!-- sql log -->
+    <appender name="sql" class="org.apache.log4j.RollingFileAppender">
+        <param name="maxFileSize" value="1000KB"/>
+        <param name="maxBackupIndex" value="10"/>
+        <param name="File" value="runtime/logs/sql.log"/>
+        <param name="Append" value="false"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d (%t) [%24F:%-3L:%-5p]%x %m%n"/>
+        </layout>
+    </appender>
 
     <category name="org.ofbiz.base.converter.Converters">
         <priority value="warn"/>
@@ -194,6 +205,42 @@
         <priority value="warn"/>
         <appender-ref ref="freemarker-log"/>
     </category>
+    
+    <category name="jdbc.sqlonly">
+        <priority value="debug"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
+    <category name="jdbc.sqltiming">
+        <priority value="fatal"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
+    <category name="jdbc.audit">
+        <priority value="fatal"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
+    <category name="jdbc.resultset">
+        <priority value="fatal"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
+    <category name="jdbc.resultsettable">
+        <priority value="fatal"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
+    <category name="jdbc.connection">
+        <priority value="fatal"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
+    <category name="jdbc.debug">
+        <priority value="error"/>
+        <appender-ref ref="sql"/>
+    </category>
+    
 
     <!-- root logger -->
     <root>
