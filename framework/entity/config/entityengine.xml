@@ -52,7 +52,7 @@ access. For a detailed description see the core/docs/entityconfig.html file.
     <debug-xa-resources value="false" />  <!-- see https://issues.apache.org/jira/browse/OFBIZ-4282 for more -->
     
     <delegator name="default" entity-model-reader="main" entity-group-reader="main" entity-eca-reader="main" distributed-cache-clear-enabled="false">
-        <group-map group-name="org.ofbiz" datasource-name="localpostnew"/>
+        <group-map group-name="org.ofbiz" datasource-name="localderby"/>
         <group-map group-name="org.ofbiz.olap" datasource-name="localderbyolap"/>
         <group-map group-name="org.ofbiz.tenant" datasource-name="localderbytenant"/>
         <!-- <group-map group-name="org.ofbiz" datasource-name="localmysql"/>
@@ -493,18 +493,15 @@ access. For a detailed description see the core/docs/entityconfig.html file.
         join-style="ansi"
         result-fetch-size="50"
         use-binary-type-for-blob="true"
-        use-order-by-nulls="true"
-        check-fk-indices-on-start="true"
-        check-fks-on-start="true"
-        >
+        use-order-by-nulls="true">
         <read-data reader-name="tenant"/>
         <read-data reader-name="seed"/>
         <read-data reader-name="seed-initial"/>
         <read-data reader-name="demo"/>
         <read-data reader-name="ext"/>
         <inline-jdbc
-            jdbc-driver="net.sf.log4jdbc.DriverSpy"
-            jdbc-uri="jdbc:log4jdbc:postgresql://127.0.0.1/mini-ofbiz"
+            jdbc-driver="org.postgresql.Driver"
+            jdbc-uri="jdbc:postgresql://127.0.0.1/mini-ofbiz"
             jdbc-username="ofbiz"
             jdbc-password="ofbiz"
             isolation-level="ReadCommitted"
