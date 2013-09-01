@@ -4,15 +4,26 @@
 
     <screen name="main">
         <section>
-            <actions>
-                <set field="headerItem" value="main"/><!-- this highlights the selected menu-item with name "main" -->
-            </actions>
+            <widgets>
+                <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
+                    <decorator-section name="body">
+                    	<platform-specific>
+		            		<html><html-template location="component://example/webapp/example/common/main.ftl"/></html>
+		            	</platform-specific>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+    
+    <screen name="user">
+        <section>
             <widgets>
                 <decorator-screen name="ExampleCommonDecorator" location="${parameters.mainDecoratorLocation}">
                     <decorator-section name="body">
-                    	<platform-specific>
-		            		<html><html-template location="component://example/webapp/example/index/index.ftl"/></html>
-		            	</platform-specific>
+                        <platform-specific>
+                            <html><html-template location="component://example/webapp/example/user/user.ftl"/></html>
+                        </platform-specific>
                     </decorator-section>
                 </decorator-screen>
             </widgets>
@@ -22,7 +33,7 @@
     <screen name="personList">
         <section>
             <actions>
-                <set field="headerItem" value="main"/><!-- this highlights the selected menu-item with name "main" -->
+                <set field="headerItem" value="main"/>
                 <set field="viewIndex" from-field="requestParameters.VIEW_INDEX" type="Integer"/>
                 <set field="viewSize" from-field="requestParameters.VIEW_SIZE" type="Integer"/>
 	            <service service-name="performFindPage" result-map="result">
@@ -49,7 +60,7 @@
     <screen name="exampleList">
         <section>
             <actions>
-                <set field="headerItem" value="main"/><!-- this highlights the selected menu-item with name "main" -->
+                <set field="headerItem" value="main"/>
             </actions>
             <widgets>
                 <decorator-screen name="ExampleCommonDecorator" location="${parameters.mainDecoratorLocation}">

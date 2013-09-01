@@ -23,6 +23,8 @@ import org.ofbiz.service.ServiceUtil
 
 public Map performFindPage() {
 	logInfo("----- performFindPage invoked -----");
+    Locale l = locale;
+    def tz = timeZone;
 	context = prepareParameters(dctx, context);
 
 	def result = performFindList(dctx, context);

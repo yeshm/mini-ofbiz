@@ -1,15 +1,15 @@
 package org.ofbiz.example;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.util.*;
 
 import javolution.util.FastList;
 import javolution.util.FastMap;
 import net.sf.json.JSONArray;
 
+import org.ofbiz.base.conversion.DateTimeConverters;
 import org.ofbiz.base.util.Debug;
+import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilValidate;
 import org.ofbiz.entity.Delegator;
@@ -73,6 +73,14 @@ public class EntityConditionWorker {
         EntityComparisonOperator<?, ?> fieldOp = null;
         if(entityOperators.containsKey(operation)) fieldOp = entityOperators.get(operation);
         else fieldOp = EntityOperator.EQUALS;
+
+        if(modelField.getType().equals("date-time") && ((String)fieldValue).length() == 10 && (operation.equals("lt") || operation.equals("lessThan") || operation.equals("le") || operation.equals("lessThanEqualTo"))){
+            try {
+                fieldValue = UtilDateTime.stringToTimeStamp((String)fieldValue + " 23:59:59.000", UtilDateTime.DATE_TIME_FORMAT, TimeZone.getDefault(), Locale.getDefault());
+            } catch (ParseException e) {
+                Debug.logError(e, module);
+            }
+        }
         
         if (operation != null) {
         	if(operation.equals("like") || operation.equals("notLike") || operation.equals("cn") || operation.equals("nc")) {

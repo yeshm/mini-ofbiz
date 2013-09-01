@@ -24,7 +24,7 @@ under the License.
     <vendor>OFBiz</vendor>
     <version>1.0</version>
 
-    <!-- Person & Related Services -->
+    <!-- User & Related Services -->
     <service name="createPerson" default-entity-name="Person" engine="groovy"
         location="component://example/script/org/ofbiz/example/person/PersonServices.groovy" invoke="createPerson" auth="true">
         <description>Create a Person</description>
@@ -118,13 +118,13 @@ under the License.
     </service>
     
     <service name="performFindPage" auth="false" engine="groovy" invoke="performFindPage" location="component://example/script/org/ofbiz/example/common/PerformFindPage.groovy">
-        <description>Generic service to return an partial list.  set filterByDate to Y to exclude expired records.
-            set noConditionFind to Y to find without conditions.  </description>
+        <description>基本的分页查询service. set filterByDate to Y to exclude expired records. set noConditionFind to Y to find without conditions.  </description>
         <implements service="performFindList"/>
         <override name="viewIndex" mode="INOUT"/>
         <override name="viewSize" mode="INOUT"/>
+        <override name="timeZone" mode="INOUT"/>
     </service>
-    
+
     <service name="serviceOne" auth="false" engine="groovy" invoke="" location="component://example/script/org/ofbiz/example/common/ServiceOne.groovy">
         <description>Test service one.</description>
         <attribute name="message" mode="INOUT" type="String"/>
