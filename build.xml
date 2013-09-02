@@ -19,8 +19,8 @@ under the License.
 -->
 
 <project name="OFBiz Main Build" default="build" basedir="."
-    xmlns:ivy="antlib:org.apache.ivy.ant"
-    xmlns:sonar="antlib:org.sonar.ant:sonar">
+         xmlns:ivy="antlib:org.apache.ivy.ant"
+         xmlns:sonar="antlib:org.sonar.ant:sonar">
 
     <import file="macros.xml"/>
     <property name="site.dir" value="../site"/>
@@ -42,16 +42,16 @@ under the License.
 
     <target name="ivy-init">
         <taskdef resource="org/apache/ivy/ant/antlib.xml"
-            uri="antlib:org.apache.ivy.ant">
+                 uri="antlib:org.apache.ivy.ant">
             <classpath>
-                <pathelement location="framework/base/lib/ivy-2.2.0.jar" />
+                <pathelement location="framework/base/lib/ivy-2.2.0.jar"/>
             </classpath>
         </taskdef>
     </target>
     <target name="sonar-init">
         <taskdef uri="antlib:org.sonar.ant:sonar" resource="org/sonar/ant/antlib.xml">
             <classpath>
-                <pathelement location="framework/base/lib/sonar-ant-task-1.3.jar" />
+                <pathelement location="framework/base/lib/sonar-ant-task-1.3.jar"/>
             </classpath>
         </taskdef>
     </target>
@@ -61,13 +61,13 @@ under the License.
     <!-- ================================================================== -->
 
     <target name="refresh"
-          description="Clean all and rebuild">
+            description="Clean all and rebuild">
         <antcall target="clean-all"/>
         <antcall target="build"/>
     </target>
 
     <target name="clean-all"
-          description="Clean all DB, Catalina and caches data, logs, and runtime subdirectories and all specific files like .rej, .orig">
+            description="Clean all DB, Catalina and caches data, logs, and runtime subdirectories and all specific files like .rej, .orig">
         <antcall target="clean-data"/>
         <antcall target="clean-logs"/>
         <antcall target="clean-output"/>
@@ -78,12 +78,12 @@ under the License.
         <antcall target="clean-lucene-index"/>
         <!-- FIXME: clean-downloads introduces some issues: with cobertura (on Windows can't be deleted, not sure why), 
                     but especially with postgresql drivers -->
-        <!-- antcall target="clean-downloads"/ -->   
+        <!-- antcall target="clean-downloads"/ -->
         <antcall target="clean"/>
     </target>
 
     <target name="clean-downloads"
-          description="Clean all downloaded files">
+            description="Clean all downloaded files">
         <delete>
             <fileset dir="framework/base/lib" includes="cobertura-*.jar"/>
             <fileset dir="framework/base/lib" includes="sonar-*.jar"/>
@@ -91,7 +91,7 @@ under the License.
         </delete>
     </target>
     <target name="clean-data"
-          description="Clean all DB data (Derby) under runtime/data">
+            description="Clean all DB data (Derby) under runtime/data">
         <subant target="clean-data">
             <filelist dir="." files="framework/build.xml"/>
         </subant>
@@ -100,56 +100,56 @@ under the License.
     </target>
 
     <target name="clean-logs"
-          description="Clean all logs in runtime/logs">
+            description="Clean all logs in runtime/logs">
         <subant target="clean-logs">
             <filelist dir="." files="framework/build.xml"/>
         </subant>
     </target>
 
     <target name="clean-output"
-          description="Clean runtime/output directory">
+            description="Clean runtime/output directory">
         <subant target="clean-output">
             <filelist dir="." files="framework/build.xml"/>
         </subant>
     </target>
 
     <target name="clean-xtra"
-          description="Clean all other files like .rej, .orig, etc.">
+            description="Clean all other files like .rej, .orig, etc.">
         <delete verbose="on">
             <fileset dir="." includes="**/.nbattrs,**/*~,**/.#*,**/.DS_Store,**/*.rej,**/*.orig"/>
         </delete>
     </target>
 
     <target name="clean-catalina"
-          description="Clean Catalina data in runtime/catalina/work">
+            description="Clean Catalina data in runtime/catalina/work">
         <subant target="clean-catalina">
             <filelist dir="." files="framework/build.xml"/>
         </subant>
     </target>
 
-   <target name="clean-cache"
-           description="Clean the UtilCache file if errors found with old objects in the cache (Java runtime error something like 'local class incompatible')">
+    <target name="clean-cache"
+            description="Clean the UtilCache file if errors found with old objects in the cache (Java runtime error something like 'local class incompatible')">
         <property file="framework/base/config/cache.properties"/>
         <echo message="NOTICE: deleting ${cache.file.store}.db"/>
         <delete file="${cache.file.store}.db" verbose="true"/>
     </target>
 
     <target name="clean-tempfiles"
-          description="Remove files located in runtime/tempfiles (captcha, etc...)">
+            description="Remove files located in runtime/tempfiles (captcha, etc...)">
         <subant target="clean-tempfiles">
             <filelist dir="." files="framework/build.xml"/>
         </subant>
     </target>
 
     <target name="clean-lucene-index"
-          description="Remove lucene indexes created in applications/content/index">
+            description="Remove lucene indexes created in applications/content/index">
         <subant target="clean-lucene-index">
             <filelist dir="." files="applications/content/build.xml"/>
         </subant>
     </target>
 
     <target name="download-selenium"
-          description="Download the selenium server v1.0.3 20.8 MB download">
+            description="Download the selenium server v1.0.3 20.8 MB download">
         <subant target="install-seleniumxml">
             <filelist dir="." files="framework/testtools/build.xml"/>
         </subant>
@@ -168,12 +168,12 @@ under the License.
             </fileset>
         </subant>
 
-        <subant target="clean"  failonerror="${specialpurpose.present}"
-          description="Use failonerror=false in case the specialpurpose directory is not there">
+        <subant target="clean" failonerror="${specialpurpose.present}"
+                description="Use failonerror=false in case the specialpurpose directory is not there">
             <filelist dir="." files="specialpurpose/build.xml"/>
         </subant>
         <subant target="clean" failonerror="${applications.present}"
-          description="Use failonerror=false in case the applications directory is not there">
+                description="Use failonerror=false in case the applications directory is not there">
             <filelist dir="." files="applications/build.xml"/>
         </subant>
         <subant target="clean">
@@ -184,7 +184,7 @@ under the License.
     </target>
 
     <target name="svninfo"
-        description="Update the Release-revision info in the footer. Note that you need a valid Internet connection and Subversion connected to the OFBiz repository for that ">
+            description="Update the Release-revision info in the footer. Note that you need a valid Internet connection and Subversion connected to the OFBiz repository for that ">
         <echo message="Creating svninfo..."/>
         <exec executable="svn" dir="." output="runtime/svninfo_tmp.xml">
             <arg value="info"/>
@@ -226,20 +226,20 @@ under the License.
             So the previous, simpler, behaviour is kept as long as you don't need 
             to build hot-deploy components in a specific order. -->
         <if>
-          <available file="hot-deploy/build.xml" property="useHotDeployBuild"/>
-          <then>
-            <subant inheritall="false">
-              <filelist dir="." files="hot-deploy/build.xml"/>
-            </subant>
-          </then>
-          <else>
-            <subant inheritall="false">
-              <fileset dir="${basedir}/hot-deploy" casesensitive="no">
-                <exclude name="disabled/**"/>
-                <include name="*/build.xml"/>
-              </fileset>
-            </subant>
-          </else>
+            <available file="hot-deploy/build.xml" property="useHotDeployBuild"/>
+            <then>
+                <subant inheritall="false">
+                    <filelist dir="." files="hot-deploy/build.xml"/>
+                </subant>
+            </then>
+            <else>
+                <subant inheritall="false">
+                    <fileset dir="${basedir}/hot-deploy" casesensitive="no">
+                        <exclude name="disabled/**"/>
+                        <include name="*/build.xml"/>
+                    </fileset>
+                </subant>
+            </else>
         </if>
         <antcall target="clean-svninfo"/>
 
@@ -277,36 +277,36 @@ under the License.
         <echo message="[docs-all] ========== Start Building (JavaDoc) =========="/>
 
         <mkdir dir="${site.dir}/javadocs"/>
-        
+
         <path id="local.class.path">
-          <fileset dir="${ofbiz.home.dir}/framework/base/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/base/lib/commons" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/base/lib/j2eespecs" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/base/lib/scripting" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/birt/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/catalina/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/entity/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/geronimo/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/jetty/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/service/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/testtools/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/webapp/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/framework/webapp/build/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/specialpurpose/ebaystore/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/specialpurpose/googlecheckout/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/specialpurpose/ldap/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/specialpurpose/pos/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/applications/content/lib" includes="*.jar"/>
-          <fileset dir="${ofbiz.home.dir}/applications/product/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/base/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/base/lib/commons" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/base/lib/j2eespecs" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/base/lib/scripting" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/birt/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/catalina/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/entity/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/geronimo/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/jetty/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/service/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/testtools/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/webapp/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/framework/webapp/build/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/specialpurpose/ebaystore/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/specialpurpose/googlecheckout/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/specialpurpose/ldap/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/specialpurpose/pos/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/applications/content/lib" includes="*.jar"/>
+            <fileset dir="${ofbiz.home.dir}/applications/product/lib" includes="*.jar"/>
         </path>
-        
+
         <property name="desc" value="API"/>
         <property name="build.dir" value="${site.dir}"/>
-        
+
         <default-javadoc/>
-        
+
         <echo message="[docs-all] ========== Done Building (JavaDocs) =========="/>
-   </target>
+    </target>
 
     <!-- ================================================================== -->
     <!-- Contrib Targets                                                    -->
@@ -383,6 +383,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${pos.memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
         </java>
     </target>
     <target name="start-batch"
@@ -391,6 +392,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${pos.memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
         </java>
     </target>
     <target name="start-debug"
@@ -399,6 +401,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <jvmarg value="-Xnoagent"/>
             <jvmarg value="-Djava.compiler=NONE"/>
             <jvmarg value="-Xdebug"/>
@@ -411,6 +414,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="pos"/>
         </java>
     </target>
@@ -437,6 +441,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
         </java>
     </target>
@@ -446,12 +451,14 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
         </java>
         <java jar="ofbiz.jar" fork="true">
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=default#DEMO1"/>
         </java>
@@ -459,6 +466,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=default#DEMO2"/>
         </java>
@@ -469,6 +477,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=seed"/>
         </java>
@@ -479,6 +488,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=seed,seed-initial,ext"/>
         </java>
@@ -489,27 +499,30 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=seed,seed-initial,ext,ext-test"/>
         </java>
     </target>
     <target name="load-readers" depends="build"
             description='Load data using the command line argument data-readers that takes a comma separated list of readers (seed, seed-initial, demo, ext, ext-test, ext-demo). On Windows XP (at least) you need top wrap the parameters in double-quotes. For instance: ant load-readers "-Ddata-readers=seed,seed-initial,ext"'>
-        <java jar="ofbiz.jar" fork="true" >
+        <java jar="ofbiz.jar" fork="true">
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=${data-readers}"/>
         </java>
     </target>
     <target name="load-file" depends="build"
             description="Load data using the command line argument 'data-file' to load data from a given file using the 'default' delegator or a delegator specified in the command line argument 'delegator'">
-        <property name="delegator" value="default" />
+        <property name="delegator" value="default"/>
         <java jar="ofbiz.jar" fork="true">
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=${delegator}"/>
             <arg value="file=${data-file}"/>
@@ -526,13 +539,16 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=tenant"/>
         </java>
         <condition property="hasTenant">
             <and>
                 <length string="${tenantId}" trim="true" when="greater" length="0"/>
-                <not><contains string="${tenantId}" substring="tenantId"/></not>
+                <not>
+                    <contains string="${tenantId}" substring="tenantId"/>
+                </not>
                 <or>
                     <length string="${component}" trim="true" when="equal" length="0"/>
                     <contains string="${component}" substring="component"/>
@@ -542,9 +558,13 @@ under the License.
         <condition property="hasTenantComponent">
             <and>
                 <length string="${tenantId}" trim="true" when="greater" length="0"/>
-                <not><contains string="${tenantId}" substring="tenantId"/></not>
+                <not>
+                    <contains string="${tenantId}" substring="tenantId"/>
+                </not>
                 <length string="${component}" trim="true" when="greater" length="0"/>
-                <not><contains string="${component}" substring="component"/></not>
+                <not>
+                    <contains string="${component}" substring="component"/>
+                </not>
             </and>
         </condition>
     </target>
@@ -552,7 +572,9 @@ under the License.
         <condition property="hasReader">
             <and>
                 <length string="${data-readers}" trim="true" when="greater" length="0"/>
-                <not><contains string="${data-readers}" substring="data-readers"/></not>
+                <not>
+                    <contains string="${data-readers}" substring="data-readers"/>
+                </not>
             </and>
         </condition>
         <condition property="noReader">
@@ -567,6 +589,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=default#${tenantId}"/>
         </java>
@@ -576,6 +599,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=default#${tenantId}"/>
             <arg value="readers=${data-readers}"/>
@@ -586,7 +610,9 @@ under the License.
         <condition property="hasComponentReader">
             <and>
                 <length string="${data-readers}" trim="true" when="greater" length="0"/>
-                <not><contains string="${data-readers}" substring="data-readers"/></not>
+                <not>
+                    <contains string="${data-readers}" substring="data-readers"/>
+                </not>
             </and>
         </condition>
         <condition property="noComponentReader">
@@ -601,6 +627,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=default#${tenantId}"/>
             <arg value="component=${component}"/>
@@ -611,6 +638,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=default#${tenantId}"/>
             <arg value="readers=${data-readers}"/>
@@ -621,7 +649,7 @@ under the License.
           target: load-all-tenants
          ================================= -->
     <target name="load-all-tenants" depends="build,load-tenants-all,load-tenants-reader"
-           description="Load data for all tenants, syntax eg: ant load-all-tenants (needs multitenant=Y in general.properties)">
+            description="Load data for all tenants, syntax eg: ant load-all-tenants (needs multitenant=Y in general.properties)">
     </target>
     <target name="check-tenants-reader">
         <property name="delegator" value="all-tenants"/>
@@ -629,13 +657,16 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=tenant"/>
         </java>
         <condition property="hasReader">
             <and>
                 <length string="${data-readers}" trim="true" when="greater" length="0"/>
-                <not><contains string="${data-readers}" substring="data-readers"/></not>
+                <not>
+                    <contains string="${data-readers}" substring="data-readers"/>
+                </not>
             </and>
         </condition>
         <condition property="noReader">
@@ -650,6 +681,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="delegator=${delegator}"/>
         </java>
@@ -659,6 +691,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=${data-readers}"/>
             <arg value="delegator=${delegator}"/>
@@ -668,8 +701,8 @@ under the License.
           target: create-tenant
          ================================= -->
     <target name="create-tenant"
-        depends="create-tenant-on-Derby,create-tenant-on-MySQL,create-tenant-on-Oracle,create-tenant-on-PostgreSQL"
-        description="Create a new tenant in your environment, create the delegator, load initial data with admin-user and password (needs multitenant=Y in general.properties)">
+            depends="create-tenant-on-Derby,create-tenant-on-MySQL,create-tenant-on-Oracle,create-tenant-on-PostgreSQL"
+            description="Create a new tenant in your environment, create the delegator, load initial data with admin-user and password (needs multitenant=Y in general.properties)">
         <tstamp/>
     </target>
 
@@ -682,7 +715,7 @@ under the License.
         Choices are e.g. seed,seed-initial,ext,demo.
         Multipe datasets must be separated with a comma: "/>
         <input addproperty="db-Platform" message="Select your default database platform, D = Derby,M = MySQL, O = Oracle, P = PostgreSQL"
-            validargs="D,M,O,P"/>
+               validargs="D,M,O,P"/>
         <echo message="Please make sure that the driver of the platform is installed and that the databases have been created (in function of the entityengine.xml datasource-names)"/>
         <input addproperty="db-IP" message="Enter IP address of the database server (you may add a port number)"/>
         <input addproperty="db-User" message="Enter userID of database user: "/>
@@ -808,7 +841,7 @@ under the License.
 
     </target>
     <target name="load-tenant-admin-user-login"
-        description="Create the admin login for the tenant with admin privileges, and a temporay password equal to 'ofbiz'. Password must be changed on first login">
+            description="Create the admin login for the tenant with admin privileges, and a temporay password equal to 'ofbiz'. Password must be changed on first login">
         <echo>------------------------------------</echo>
         <echo message="Installing the admin for the tenant"/>
         <echo message="Delegator = ${delegatorId}"/>
@@ -828,7 +861,7 @@ under the License.
         <delete file="runtime/tmp/tmpUserLogin.xml"/>
     </target>
     <target name="load-tenant-data-readers"
-        description="Load data of given data-readers in the tenant database">
+            description="Load data of given data-readers in the tenant database">
         <echo>------------------------------------</echo>
         <echo message="Loading selected data-readers in tenant databaset"/>
         <echo message="Delegator = default#${tenantId}"/>
@@ -839,6 +872,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="install"/>
             <arg value="readers=${data-readers}"/>
             <arg value="delegator=default#${tenantId}"/>
@@ -848,7 +882,9 @@ under the License.
             description="Create a user login with admin privileges and a temporary password equal to 'ofbiz'; after a successful login the user will be prompted for a new password. Example command for the userLogin 'admin': ./ant load-admin-user-login -DuserLoginId=admin">
         <fail message="userLoginId parameter is required. To add the parameter to the command for user admin: -DuserLoginId=admin">
             <condition>
-                <not><isset property="userLoginId"/></not>
+                <not>
+                    <isset property="userLoginId"/>
+                </not>
             </condition>
         </fail>
         <copy file="${basedir}/framework/resources/templates/AdminUserLoginData.xml" tofile="runtime/tmp/tmpUserLogin.xml">
@@ -868,11 +904,12 @@ under the License.
     </target>
 
     <target name="run-tests" depends="build"
-          description="Run OFBiz default tests; you have to manually execute 'ant load-demo' before and see results in runtime/logs/test-results/html/all-tests.html.">
+            description="Run OFBiz default tests; you have to manually execute 'ant load-demo' before and see results in runtime/logs/test-results/html/all-tests.html.">
         <java jar="ofbiz.jar" fork="true" resultproperty="test.result">
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="test"/>
             <env key="LC_ALL" value="C"/>
         </java>
@@ -892,8 +929,8 @@ under the License.
         </fail>
     </target>
 
-   <target name="run-tests-with-cobertura" depends="download-cobertura, run-tests"
-        description="Download Cobertura and perform code coverage (same as run-tests). You will need a valid Internet connection to download cobertura"/>
+    <target name="run-tests-with-cobertura" depends="download-cobertura, run-tests"
+            description="Download Cobertura and perform code coverage (same as run-tests). You will need a valid Internet connection to download cobertura"/>
 
     <target name="_check-separated-tests-already-setup">
         <available file="runtime/test-list-build.xml" property="_separated-tests-already-setup"/>
@@ -903,6 +940,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="testlist"/>
             <arg file="runtime/test-list-build.xml"/>
             <arg value="-ant"/>
@@ -910,13 +948,14 @@ under the License.
         </java>
     </target>
     <target name="run-test" depends="build"
-          description="Run a single test, syntax eg: ant run-test -Dtest.component=service -Dtest.case=service-soap-tests">
+            description="Run a single test, syntax eg: ant run-test -Dtest.component=service -Dtest.case=service-soap-tests">
         <fail unless="test.component">test.component is a required parameter: -Dtest.component=componentname</fail>
         <fail unless="test.case">test.case is a required parameter: -Dtest.case=testcasename</fail>
         <java jar="ofbiz.jar" fork="true" resultproperty="test.result">
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="test"/>
             <arg value="-component=${test.component}"/>
             <arg value="-case=${test.case}"/>
@@ -943,6 +982,7 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <jvmarg value="-Dfile.encoding=UTF-8"/>
             <arg value="test"/>
             <arg value="-component=${test.component}"/>
             <arg value="-suitename=${test.suiteName}"/>
@@ -969,9 +1009,9 @@ under the License.
         <taskdef resource="tasks.properties">
             <classpath>
                 <fileset dir="framework/base/lib">
-                    <include name="cobertura-1.9.4.1.jar" />
-                    <include name="log4j-1.2.16.jar" />
-                    <include name="scripting/asm*.jar" />
+                    <include name="cobertura-1.9.4.1.jar"/>
+                    <include name="log4j-1.2.16.jar"/>
+                    <include name="scripting/asm*.jar"/>
                 </fileset>
             </classpath>
         </taskdef>
@@ -997,9 +1037,9 @@ under the License.
         <taskdef resource="tasks.properties">
             <classpath>
                 <fileset dir="framework/base/lib">
-                    <include name="cobertura-1.9.4.1.jar" />
-                    <include name="log4j-1.2.16.jar" />
-                    <include name="scripting/asm*.jar" />
+                    <include name="cobertura-1.9.4.1.jar"/>
+                    <include name="log4j-1.2.16.jar"/>
+                    <include name="scripting/asm*.jar"/>
                 </fileset>
             </classpath>
         </taskdef>
@@ -1035,28 +1075,28 @@ under the License.
             applications/product/src, applications/securityext/src, applications/workeffort/src, specialpurpose/assetmaint/src,
             specialpurpose/ebay/src, specialpurpose/ebaystore/src, specialpurpose/ecommerce/src, specialpurpose/googlebase/src,
             specialpurpose/googlecheckout/src, specialpurpose/hhfacility/src, specialpurpose/oagis/src, specialpurpose/pos/src,
-            specialpurpose/scrum/src" />
+            specialpurpose/scrum/src"/>
         <property name="sonar.tests" value="framework/base/src/org/ofbiz/base/test, framework/entity/src/org/ofbiz/entity/test,
             framework/service/src/org/ofbiz/service/test, framework/sql/src/org/ofbiz/sql/test,
             applications/accounting/src/org/ofbiz/accounting/test, applications/content/src/org/ofbiz/content/test,
             applications/product/src/org/ofbiz/product/test, applications/product/src/org/ofbiz/shipment/test,
-            applications/securityext/src/org/ofbiz/securityext/test" />
+            applications/securityext/src/org/ofbiz/securityext/test"/>
 
         <!-- list of optional Sonar properties -->
-        <property name="sonar.projectName" value="Apache OFBiz" />
+        <property name="sonar.projectName" value="Apache OFBiz"/>
         <sonar:sonar key="org.apache:ofbiz" version="${info.entry.commit(revision)}" xmlns:sonar="antlib:org.sonar.ant:sonar"/>
-        <property name="sonar.dynamicAnalysis" value="reuseReports" />
+        <property name="sonar.dynamicAnalysis" value="reuseReports"/>
         <property name="sonar.cobertura.reportPath" value="runtime/logs/cobertura-report/coverage.xml"/>
-        <property name="sonar.java.source" value="1.6" />
-        <property name="sonar.java.target" value="1.6" />
+        <property name="sonar.java.source" value="1.6"/>
+        <property name="sonar.java.target" value="1.6"/>
         <!-- default for jdbc url: jdbc:mysql://localhost:3306/sonar?useUnicode=true&amp;characterEncoding=utf8-->
         <property name="sonar.jdbc.url" value="${sonar.jdbc.url}"/>
-        <property name="sonar.jdbc.driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="sonar.jdbc.username" value="${sonar.jdbc.username}" />
-        <property name="sonar.jdbc.password" value="${sonar.jdbc.password}" />
+        <property name="sonar.jdbc.driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="sonar.jdbc.username" value="${sonar.jdbc.username}"/>
+        <property name="sonar.jdbc.password" value="${sonar.jdbc.password}"/>
 
         <!-- SERVER ON A REMOTE HOST -->
-        <property name="sonar.host.url" value="${sonar.host.url}" />
+        <property name="sonar.host.url" value="${sonar.host.url}"/>
     </target>
 
     <target name="full-sonar">
@@ -1098,11 +1138,11 @@ under the License.
         <input addproperty="webapp-name" message="Webapp name: (e.g. mycomponent) [Mandatory]"/>
         <input addproperty="base-permission" message="Base permission: (e.g. MYCOMPONENT) [Mandatory]"/>
         <echo>The following hot-deploy component will be created:
-              Name: ${component-name}
-              Resource Name: ${component-resource-name}
-              Webapp Name: ${webapp-name}
-              Base permission: ${base-permission}
-              Folder: ${basedir}/hot-deploy/${component-name}
+            Name: ${component-name}
+            Resource Name: ${component-resource-name}
+            Webapp Name: ${webapp-name}
+            Base permission: ${base-permission}
+            Folder: ${basedir}/hot-deploy/${component-name}
         </echo>
         <input addproperty="confirm-component-creation" message="Confirm: " defaultvalue="N" validargs="Y,N,y,n"/>
         <fail message="Component creation cancelled by the user.">
@@ -1115,7 +1155,7 @@ under the License.
                 <equals arg1="${component-name}" arg2="" casesensitive="false" trim="yes"/>
             </condition>
         </fail>
-      <fail message="Resource name is mandatory">
+        <fail message="Resource name is mandatory">
             <condition>
                 <equals arg1="${component-resource-name}" arg2="" casesensitive="false" trim="yes"/>
             </condition>
@@ -1130,7 +1170,7 @@ under the License.
                 <equals arg1="${base-permission}" arg2="" casesensitive="false" trim="yes"/>
             </condition>
         </fail>
-      <filterset id="replacePlaceholders">
+        <filterset id="replacePlaceholders">
             <filter token="component-name" value="${component-name}"/>
             <filter token="component-resource-name" value="${component-resource-name}"/>
             <filter token="base-permission" value="${base-permission}"/>
@@ -1163,19 +1203,24 @@ under the License.
         <copy file="${basedir}/framework/resources/templates/build.xml" tofile="${basedir}/hot-deploy/${component-name}/build.xml" encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/TypeData.xml" tofile="${basedir}/hot-deploy/${component-name}/data/${component-resource-name}TypeData.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/TypeData.xml" tofile="${basedir}/hot-deploy/${component-name}/data/${component-resource-name}TypeData.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/SecurityData.xml" tofile="${basedir}/hot-deploy/${component-name}/data/${component-resource-name}SecurityData.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/SecurityData.xml" tofile="${basedir}/hot-deploy/${component-name}/data/${component-resource-name}SecurityData.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/DemoData.xml" tofile="${basedir}/hot-deploy/${component-name}/data/${component-resource-name}DemoData.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/DemoData.xml" tofile="${basedir}/hot-deploy/${component-name}/data/${component-resource-name}DemoData.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/HELP.xml" tofile="${basedir}/hot-deploy/${component-name}/data/helpdata/HELP_${component-resource-name}.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/HELP.xml" tofile="${basedir}/hot-deploy/${component-name}/data/helpdata/HELP_${component-resource-name}.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/document.xml" tofile="${basedir}/hot-deploy/${component-name}/documents/${component-resource-name}.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/document.xml" tofile="${basedir}/hot-deploy/${component-name}/documents/${component-resource-name}.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
         <copy file="${basedir}/framework/resources/templates/entitymodel.xml" tofile="${basedir}/hot-deploy/${component-name}/entitydef/entitymodel.xml" encoding="utf-8">
@@ -1184,19 +1229,23 @@ under the License.
         <copy file="${basedir}/framework/resources/templates/services.xml" tofile="${basedir}/hot-deploy/${component-name}/servicedef/services.xml" encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/Tests.xml" tofile="${basedir}/hot-deploy/${component-name}/testdef/${component-resource-name}Tests.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/Tests.xml" tofile="${basedir}/hot-deploy/${component-name}/testdef/${component-resource-name}Tests.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/UiLabels.xml" tofile="${basedir}/hot-deploy/${component-name}/config/${component-resource-name}UiLabels.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/UiLabels.xml" tofile="${basedir}/hot-deploy/${component-name}/config/${component-resource-name}UiLabels.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
         <copy file="${basedir}/framework/resources/templates/index.jsp" tofile="${basedir}/hot-deploy/${component-name}/webapp/${webapp-name}/index.jsp" encoding="iso-8859-1">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/error.jsp" tofile="${basedir}/hot-deploy/${component-name}/webapp/${webapp-name}/error/error.jsp" encoding="iso-8859-1">
+        <copy file="${basedir}/framework/resources/templates/error.jsp" tofile="${basedir}/hot-deploy/${component-name}/webapp/${webapp-name}/error/error.jsp"
+              encoding="iso-8859-1">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/controller.xml" tofile="${basedir}/hot-deploy/${component-name}/webapp/${webapp-name}/WEB-INF/controller.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/controller.xml" tofile="${basedir}/hot-deploy/${component-name}/webapp/${webapp-name}/WEB-INF/controller.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
         <copy file="${basedir}/framework/resources/templates/web.xml" tofile="${basedir}/hot-deploy/${component-name}/webapp/${webapp-name}/WEB-INF/web.xml" encoding="utf-8">
@@ -1205,17 +1254,20 @@ under the License.
         <copy file="${basedir}/framework/resources/templates/CommonScreens.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/CommonScreens.xml" encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/Screens.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/${component-resource-name}Screens.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/Screens.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/${component-resource-name}Screens.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/Menus.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/${component-resource-name}Menus.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/Menus.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/${component-resource-name}Menus.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
-        <copy file="${basedir}/framework/resources/templates/Forms.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/${component-resource-name}Forms.xml" encoding="utf-8">
+        <copy file="${basedir}/framework/resources/templates/Forms.xml" tofile="${basedir}/hot-deploy/${component-name}/widget/${component-resource-name}Forms.xml"
+              encoding="utf-8">
             <filterset refid="replacePlaceholders"/>
         </copy>
         <echo>Component successfully created in folder ${basedir}/hot-deploy/${component-name}.
-              Restart OFBiz and then visit the URL: http://localhost:8080/${webapp-name}
+            Restart OFBiz and then visit the URL: http://localhost:8080/${webapp-name}
         </echo>
     </target>
 
