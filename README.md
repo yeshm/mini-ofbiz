@@ -9,12 +9,12 @@ A Mini Framework base on Ofbiz.
 
 但是做为小型新项目的起点，Ofbiz貌似一个庞然大物，无从下手，因此[mini-ofbiz](https://github.com/yeshm/mini-ofbiz)来了。mini-ofbiz是基于Ofbiz，并剔除了所有业务模块，加入[BUI](http://www.builive.com/)前端框架，适合做为小中大型项目起点的一个开源项目。
 
-采用mini-ofbiz，延续了java语言的优势，业务逻辑可使用脚本语言(如groovy)实现，以及Entity Engine，Service Engine，Widget Engine的完美配合，使得开发过程中基本不需要重启服务器，所有书写的代码都是业务相关的，简洁的。让开发人员从琐碎的工作中脱离出来，把全部精力集中业务实现上。
+mini-ofbiz，延续了java语言的优势，业务逻辑可使用脚本语言(如groovy)实现，以及Entity Engine，Service Engine，Widget Engine的完美配合，使得开发过程中基本不需要重启服务器，所有书写的代码都是业务相关的，简洁的。让开发人员从琐碎的工作中脱离出来，把全部精力集中业务实现上。
 
 ## 运行 ##
 下载代码后，在命令行，mini-ofbiz主目录下，运行
 
-1. 状态demo数据: ant load-demo
+1. 载入demo数据: ant load-demo
 2. 启动服务: ant start
 3. 访问，示例：localhost:8080/example， 管理工具：localhost:8080/webtools，用户名：admin，密码：ofbiz。
 
