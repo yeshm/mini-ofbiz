@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<entitymodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/entitymodel.xsd">
+    <!-- ========================================================= -->
+    <!-- ======================== Defaults ======================= -->
+    <!-- ========================================================= -->
+    <title>Entity of an Open For Business Project Component</title>
+    <description>None</description>
+    <version>1.0</version>
+
+    <view-entity entity-name="ExampleStatusDetail" package-name="org.ofbiz.example.example">
+        <member-entity entity-alias="EXPL" entity-name="Example" />
+        <member-entity entity-alias="EXST" entity-name="ExampleStatus" />
+        <member-entity entity-alias="STIT" entity-name="StatusItem" />
+        <alias-all entity-alias="EXPL">
+            <exclude field="statusId" />
+        </alias-all>
+        <alias-all entity-alias="EXST" />
+        <alias-all entity-alias="STIT">
+            <exclude field="description" />
+        </alias-all>
+        <alias name="statusDescription" entity-alias="STIT" field="description" />
+        <alias entity-alias="EXPL" name="currentStatusId" field="statusId" />
+        <alias name="statusDelay">
+            <complex-alias operator="-">
+                <complex-alias-field entity-alias="EXST" field="statusDate" />
+                <complex-alias-field entity-alias="EXPL" field="exampleDate" />
+            </complex-alias>
+        </alias>
+        <view-link entity-alias="EXPL" rel-entity-alias="EXST">
+            <key-map field-name="exampleId" />
+        </view-link>
+        <view-link entity-alias="EXST" rel-entity-alias="STIT">
+            <key-map field-name="statusId" />
+        </view-link>
+    </view-entity>
+
+    <view-entity entity-name="ExampleStatusItem" package-name="org.ofbiz.example.example">
+        <member-entity entity-alias="SI" entity-name="StatusItem" />
+        <alias-all entity-alias="SI" />
+        <entity-condition>
+            <condition-expr entity-alias="SI" field-name="statusTypeId" operator="equals" value="EXAMPLE_STATUS" />
+            <order-by field-name="sequenceId" />
+        </entity-condition>
+    </view-entity>
+
+    <!--example view for creating charts -->
+    <view-entity entity-name="ExampleCountByType" package-name="org.ofbiz.example.example">
+        <member-entity entity-alias="EX" entity-name="Example" />
+        <alias entity-alias="EX" name="total" field="exampleId" function="count-distinct" />
+        <alias entity-alias="EX" name="exampleTypeId" group-by="true" />
+    </view-entity>
+
+    <view-entity entity-name="PersonAndType" package-name="org.ofbiz.example.example" title="Person and PersonType to be able to list person by type name and status name">
+        <member-entity entity-alias="PS" entity-name="Person" />
+        <member-entity entity-alias="PST" entity-name="PersonType" />
+        <alias-all entity-alias="PS" />
+        <alias name="parentTypeId" entity-alias="PST"></alias>
+        <alias name="personTypeDesc" entity-alias="PST" field="description"></alias>
+        <view-link entity-alias="PS" rel-entity-alias="PST">
+            <key-map field-name="personTypeId" />
+        </view-link>
+        <relation type="one-nofk" rel-entity-name="StatusItem">
+            <key-map field-name="statusId" />
+        </relation>
+    </view-entity>
+</entitymodel>
