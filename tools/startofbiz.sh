@@ -36,7 +36,7 @@ rm -f $OFBIZ_LOG
 MEMIF="-Xms128M -Xmx512M -XX:MaxPermSize=512m"
 #JMX="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=33333 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
 #MISC="-Duser.language=en"
-VMARGS="$MEMIF $MISC $JMX $DEBUG $RMIIF"
+VMARGS="$MEMIF $MISC $JMX $DEBUG $RMIIF -Dfile.encoding=UTF-8"
 
 # Worldpay Config
 #VMARGS="-Xbootclasspath/p:applications/accounting/lib/cryptix.jar $VMARGS"

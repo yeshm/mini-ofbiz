@@ -1,0 +1,5 @@
+1.解决页面中文乱码问题，修改了文件
+build.xml
+tools/startofbiz.bat
+tools/startofbiz.sh
+加入jvm参数 -Dfile.encoding=UTF-8
