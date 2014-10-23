@@ -153,7 +153,7 @@ under the License.
                 return editStr + delStr;
             }}
         ];
-        var store = Search.createStore('<@ofbizUrl>user.json</@ofbizUrl>', {
+        var store = Search.createStore('<@ofbizUrl>gridPerson</@ofbizUrl>', {
             pageSize: 15
         });
         var gridCfg = Search.createGridCfg(columns, {
@@ -207,12 +207,25 @@ under the License.
         function delItems(items) {
             var ids = [];
             BUI.each(items, function (item) {
-                ids.push(item.id);
+                ids.push(item.personId);
             });
 
             if (ids.length) {
                 BUI.Message.Confirm('确认要删除选中的记录么？', function () {
-                    alert("未实现！");
+                    $.ajax({
+                        type: 'post',
+                        url: '<@ofbizUrl>deletePerson</@ofbizUrl>',
+                        dataType: 'json',
+                        data: {ids : ids},
+                        success: function (data) {
+                            if (data.result == "success") {
+                                search.load();
+                            } else {
+                                var msg = data.msg;
+                                BUI.Message.Alert('错误原因:' + msg);
+                            }
+                        }
+                    });
                 }, 'question');
             }
         }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+    <description>Example Services</description>
+    <vendor>OFBiz</vendor>
+    <version>1.0</version>
+
+    <!-- User & Related Services -->
+    <service name="createPerson" default-entity-name="Person" engine="groovy"
+        location="component://example/script/org/miniofbiz/example/person/PersonServices.groovy" invoke="createPerson" auth="true">
+        <description>Create a Person</description>
+        <auto-attributes include="pk" mode="OUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <override name="personTypeId" optional="false"/>
+        <override name="statusId" optional="false"/>
+        <override name="name" optional="false"/>
+    </service>
+    <service name="updatePerson" default-entity-name="Person" engine="groovy"
+        location="component://example/script/org/miniofbiz/example/person/PersonServices.groovy" invoke="updatePerson" auth="true">
+        <description>Update a Person</description>
+        <auto-attributes include="pk" mode="INOUT" optional="false"/>
+        <auto-attributes include="nonpk" mode="IN" optional="true"/>
+        <attribute name="oldStatusId" type="String" mode="OUT" optional="false"/>
+    </service>
+    <service name="deletePerson" default-entity-name="Person" engine="groovy"
+        location="component://example/script/org/miniofbiz/example/person/PersonServices.groovy" invoke="deletePerson" auth="true">
+        <description>Delete a Person</description>
+        <auto-attributes include="pk" mode="INOUT" optional="false"/>
+    </service>
+    <service name="createPersonStatus" default-entity-name="PersonStatus" engine="groovy"
+            location="component://example/script/org/miniofbiz/example/person/PersonServices.groovy" invoke="createPersonStatus" auth="true">
+        <description>Create a PersonStatus</description>
+        <auto-attributes include="all" mode="IN" optional="false">
+            <exclude field-name="statusDate"/>
+            <exclude field-name="statusEndDate"/>
+        </auto-attributes>
+    </service>
+
+</services>

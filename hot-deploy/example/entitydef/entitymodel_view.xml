@@ -27,7 +27,7 @@ under the License.
     <description>None</description>
     <version>1.0</version>
 
-    <view-entity entity-name="ExampleStatusDetail" package-name="org.ofbiz.example.example">
+    <view-entity entity-name="ExampleStatusDetail" package-name="org.miniofbiz.example.example">
         <member-entity entity-alias="EXPL" entity-name="Example" />
         <member-entity entity-alias="EXST" entity-name="ExampleStatus" />
         <member-entity entity-alias="STIT" entity-name="StatusItem" />
@@ -54,7 +54,7 @@ under the License.
         </view-link>
     </view-entity>
 
-    <view-entity entity-name="ExampleStatusItem" package-name="org.ofbiz.example.example">
+    <view-entity entity-name="ExampleStatusItem" package-name="org.miniofbiz.example.example">
         <member-entity entity-alias="SI" entity-name="StatusItem" />
         <alias-all entity-alias="SI" />
         <entity-condition>
@@ -64,13 +64,13 @@ under the License.
     </view-entity>
 
     <!--example view for creating charts -->
-    <view-entity entity-name="ExampleCountByType" package-name="org.ofbiz.example.example">
+    <view-entity entity-name="ExampleCountByType" package-name="org.miniofbiz.example.example">
         <member-entity entity-alias="EX" entity-name="Example" />
         <alias entity-alias="EX" name="total" field="exampleId" function="count-distinct" />
         <alias entity-alias="EX" name="exampleTypeId" group-by="true" />
     </view-entity>
 
-    <view-entity entity-name="PersonAndType" package-name="org.ofbiz.example.example" title="Person and PersonType to be able to list person by type name and status name">
+    <view-entity entity-name="PersonAndType" package-name="org.miniofbiz.example.example" title="Person and PersonType to be able to list person by type name and status name">
         <member-entity entity-alias="PS" entity-name="Person" />
         <member-entity entity-alias="PST" entity-name="PersonType" />
         <alias-all entity-alias="PS" />

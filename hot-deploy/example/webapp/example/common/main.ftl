@@ -54,13 +54,13 @@ under the License.
     BUI.use('common/main', function () {
         var config = [
             {
-                id: 'user',
-                homePage: 'users',
+                id: 'person',
+                homePage: 'listPerson',
                 menu: [
                     {
                         text: '会员管理',
                         items: [
-                            {id: 'users', text: '会员管理', href: '<@ofbizUrl>user</@ofbizUrl>'}
+                            {id: 'listPerson', text: '会员管理', href: '<@ofbizUrl>listPerson</@ofbizUrl>'}
                         ]
                     },
                     {

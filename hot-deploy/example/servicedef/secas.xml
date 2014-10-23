@@ -28,11 +28,4 @@ under the License.
         <condition-field field-name="statusId" operator="not-equals" to-field-name="oldStatusId"/>
         <action service="createPersonStatus" mode="sync"/>
     </eca>
-    <eca service="createExample" event="return">
-        <action service="createExampleStatus" mode="sync"/>
-    </eca>
-    <eca service="updateExample" event="return">
-        <condition-field field-name="statusId" operator="not-equals" to-field-name="oldStatusId"/>
-        <action service="createExampleStatus" mode="sync"/>
-    </eca>
 </service-eca>

@@ -4,10 +4,6 @@
     <!-- The controller elements that are common to all OFBiz components
          can be found in the following xml file. A component can override the
          elements found in the common-controller.xml file. -->
-    <include location="component://common/webcommon/WEB-INF/common-controller.xml"/>
-    <include location="component://example/webapp/example/WEB-INF/controller-common.xml"/>
-    <include location="component://example/webapp/example/WEB-INF/controller-person.xml"/>
-
     <description>Example Component Site Configuration File</description>
 
     <!-- Events to run on every request before security (chains exempt) -->
@@ -23,13 +19,15 @@
     -->
 
     <!-- Request Mappings -->
-    <request-map uri="main">
-        <security https="false" auth="true"/>
-        <response name="success" type="view" value="main"/>
+    <request-map uri="jsonResponse">
+        <security direct-request="false"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/common/CommonEvents.groovy" invoke="jsonResponseFromRequestAttributes"/>
+        <response name="success" type="none"/>
     </request-map>
-
-    <!-- View Mappings -->
-    <view-map name="login" type="screen" page="component://example/widget/CommonScreens.xml#login"/>
-    <view-map name="main" type="screen" page="component://example/widget/ExampleScreens.xml#main"/>
+    <request-map uri="gridResponse">
+        <security direct-request="false"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/common/CommonEvents.groovy" invoke="gridResponseFromRequestAttributes"/>
+        <response name="success" type="none"/>
+    </request-map>
 
 </site-conf>

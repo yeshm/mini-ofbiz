@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site-conf xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/site-conf.xsd">
+    <!-- The controller elements that are common to all OFBiz components
+         can be found in the following xml file. A component can override the
+         elements found in the common-controller.xml file. -->
+    <description>Example Component Site Configuration File</description>
+
+    <!-- Events to run on every request before security (chains exempt) -->
+    <!--
+    <preprocessor>
+    </preprocessor>
+    -->
+    <!-- Events to run on every request after all other processing (chains exempt) -->
+    <!--
+    <postprocessor>
+        <event name="test" type="java" path="org.ofbiz.webapp.event.TestEvent" invoke="test"/>
+    </postprocessor>
+    -->
+
+    <!-- Request Mappings -->
+    <request-map uri="listPerson">
+        <security https="false" auth="true"/>
+        <response name="success" type="view" value="listPerson"/>
+    </request-map>
+    <request-map uri="gridPerson">
+        <security https="false" auth="true"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/example/person/PersonEvents.groovy" invoke="gridPerson"/>
+        <response name="success" type="request" value="gridResponse"/>
+    </request-map>
+    <request-map uri="createPerson">
+        <security https="false" auth="true"/>
+        <event type="service" invoke="createPerson"/>
+        <response name="success" type="request" value="jsonResponse"/>
+    </request-map>
+    <request-map uri="getPerson">
+        <security https="false" auth="true"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/example/person/PersonEvents.groovy" invoke="getPerson"/>
+        <response name="success" type="request" value="jsonResponse"/>
+    </request-map>
+    <request-map uri="updatePerson">
+        <security https="false" auth="true"/>
+        <event type="service" invoke="updatePerson"/>
+        <response name="success" type="request" value="jsonResponse"/>
+    </request-map>
+    <request-map uri="deletePerson">
+        <security https="false" auth="true"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/example/person/PersonEvents.groovy" invoke="deletePerson"/>
+        <response name="success" type="request" value="jsonResponse"/>
+    </request-map>
+
+    <!-- View Mappings -->
+    <view-map name="listPerson" type="screen" page="component://example/widget/PersonScreens.xml#listPerson"/>
+    <view-map name="personList" type="screen" page="component://example/widget/PersonScreens.xml#personList"/>
+</site-conf>
