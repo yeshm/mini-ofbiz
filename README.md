@@ -17,7 +17,9 @@ mini-ofbiz，延续了java语言的优势，业务逻辑可使用脚本语言(�
 1. 载入demo数据: ant load-demo
 2. 启动服务: ant start
 
-访问，示例程序：localhost:8080/example， 管理工具：localhost:8080/webtools，用户名：admin，密码：ofbiz。
+访问，
+示例程序：localhost:8080/example， 管理工具：localhost:8080/webtools，用户名：admin，密码：ofbiz。
+elasticsearch-HQ: localhost:8080/hq
 
 ## 交流 ##
 
