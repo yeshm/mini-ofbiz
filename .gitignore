@@ -37,3 +37,4 @@ themes/flatgrey/webapp/flatgrey/mainrtl-min.css
 *#
 .*.swp
 .*.swo
+hot-deploy/elasticsearch/data/

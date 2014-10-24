@@ -124,7 +124,32 @@
 	<classpathentry kind="lib" path="framework/base/lib/log4j-core-2.0.1.jar"/>
 	<classpathentry kind="lib" path="framework/base/lib/log4j-jcl-2.0.1.jar"/>
 	<classpathentry kind="lib" path="framework/base/lib/log4j-slf4j-impl-2.0.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/antlr-runtime-3.5.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/asm-4.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/asm-commons-4.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/elasticsearch-1.3.4.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/jts-1.13.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-analyzers-common-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-codecs-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-core-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-expressions-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-grouping-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-highlighter-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-join-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-memory-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-misc-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-queries-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-queryparser-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-sandbox-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-spatial-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/lucene-suggest-4.9.1.jar"/>
+	<classpathentry kind="lib" path="hot-deploy/elasticsearch/lib/spatial4j-0.4.1.jar"/>
 	<classpathentry kind="src" path="framework/base/build/gen-src/javacc"/>
+	<classpathentry kind="src" path="hot-deploy/example/script"/>
+	<classpathentry kind="src" path="hot-deploy/example/src"/>
+	<classpathentry kind="src" path="hot-deploy/elasticsearch/src"/>
 	<classpathentry excluding="org/ofbiz/base/config/CoberturaInstrumenter.java" kind="src" path="framework/base/src"/>
 	<classpathentry kind="src" path="framework/catalina/src"/>
 	<classpathentry kind="src" path="framework/common/src"/>
