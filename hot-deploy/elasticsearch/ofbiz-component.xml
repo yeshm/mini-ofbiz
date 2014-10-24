@@ -18,4 +18,11 @@
             server="default-server"
             location="webapp/elasticsearch"
             mount-point="/elasticsearch"/>
+
+    <webapp name="elastichq"
+            app-bar-display="false"
+            title="Elastic HQ"
+            server="default-server"
+            location="webapp/elastichq"
+            mount-point="/hq"/>
 </ofbiz-component>
