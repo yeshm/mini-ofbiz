@@ -28,6 +28,18 @@
         <response name="success" type="view" value="main"/>
     </request-map>
 
+    <request-map uri="testGroovy">
+        <security https="false" auth="false"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/example/TestEvents.groovy" invoke="testGroovy"/>
+        <response name="success" type="none"/>
+    </request-map>
+
+    <request-map uri="testJson">
+        <security https="false" auth="false"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/example/TestEvents.groovy" invoke="testJson"/>
+        <response name="success" type="request" value="jsonResponse"/>
+    </request-map>
+
     <!-- View Mappings -->
     <view-map name="login" type="screen" page="component://example/widget/CommonScreens.xml#login"/>
     <view-map name="main" type="screen" page="component://example/widget/ExampleScreens.xml#main"/>
