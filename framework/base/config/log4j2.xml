@@ -51,6 +51,7 @@
         <logger name="freemarker" level="warn" additivity="false">
             <appender-ref ref="external"/>
         </logger>
+        <logger name="org.elasticsearch" level="info"/>
 
         <Root level="all">
             <AppenderRef ref="async"/>
