@@ -30,18 +30,24 @@
 
     <request-map uri="testGroovy">
         <security https="false" auth="false"/>
-        <event type="groovy" path="component://example/script/org/miniofbiz/example/TestEvents.groovy" invoke="testGroovy"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/test/TestEvents.groovy" invoke="testGroovy"/>
         <response name="success" type="none"/>
     </request-map>
 
     <request-map uri="testJson">
         <security https="false" auth="false"/>
-        <event type="groovy" path="component://example/script/org/miniofbiz/example/TestEvents.groovy" invoke="testJson"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/test/TestEvents.groovy" invoke="testJson"/>
         <response name="success" type="request" value="jsonResponse"/>
+    </request-map>
+
+    <request-map uri="testAction">
+        <security https="false" auth="false"/>
+        <response name="success" type="view" value="test"/>
     </request-map>
 
     <!-- View Mappings -->
     <view-map name="login" type="screen" page="component://example/widget/CommonScreens.xml#login"/>
     <view-map name="main" type="screen" page="component://example/widget/ExampleScreens.xml#main"/>
+    <view-map name="test" type="screen" page="component://example/widget/TestScreens.xml#test"/>
 
 </site-conf>

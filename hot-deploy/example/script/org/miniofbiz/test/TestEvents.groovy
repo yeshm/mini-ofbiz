@@ -1,4 +1,4 @@
-package org.miniofbiz.example
+package org.miniofbiz.test
 
 import org.ofbiz.base.util.UtilHttp
 import org.ofbiz.entity.Delegator
