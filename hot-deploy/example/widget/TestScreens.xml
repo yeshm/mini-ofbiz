@@ -6,6 +6,9 @@
         <section>
             <actions>
                 <set field="actionField" value="actionValue"/>
+
+                <!--read from session-->
+                <set field="sessionActionField" from-field="userLogin" from-scope="user"/>
                 <script location="component://example/script/org/miniofbiz/test/TestActions.groovy#test"/>
             </actions>
             <widgets>
