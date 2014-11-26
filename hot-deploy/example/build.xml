@@ -119,4 +119,9 @@
         <antcall target="revert-ofbiz-patches"/>
         <antcall target="apply-ofbiz-patches"/>
     </target>
+
+    <target name="jar" depends="classes">
+        <main-jar/>
+        <test-jar/>
+    </target>
 </project>

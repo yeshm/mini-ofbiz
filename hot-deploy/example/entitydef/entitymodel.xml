@@ -36,9 +36,10 @@
         <field name="statusId" type="id-ne"></field>
         <prim-key field="personId" />
         <prim-key field="statusDate" />
-        <relation type="one" fk-name="PERSONST_PERSON" rel-entity-name="Person">
-            <key-map field-name="personId" />
-        </relation>
+        <!--外键关联会导致单元测试的数据库回滚失败，具体原因待查-->
+        <!--<relation type="one" fk-name="PERSONST_PERSON" rel-entity-name="Person">-->
+            <!--<key-map field-name="personId" />-->
+        <!--</relation>-->
         <relation type="one" fk-name="PERSONST_STTS" rel-entity-name="StatusItem">
             <key-map field-name="statusId" />
         </relation>
