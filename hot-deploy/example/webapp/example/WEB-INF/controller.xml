@@ -28,6 +28,20 @@
         <response name="success" type="view" value="main"/>
     </request-map>
 
+    <request-map uri="monitorHttp">
+        <security https="false" auth="false"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/common/MonitorEvents.groovy" invoke="http"/>
+        <response name="success" type="none"/>
+        <response name="error"  type="none"/>
+    </request-map>
+
+    <request-map uri="monitorDb">
+        <security https="false" auth="false"/>
+        <event type="groovy" path="component://example/script/org/miniofbiz/common/MonitorEvents.groovy" invoke="db"/>
+        <response name="success" type="none"/>
+        <response name="error"  type="none"/>
+    </request-map>
+    
     <request-map uri="testGroovy">
         <security https="false" auth="false"/>
         <event type="groovy" path="component://example/script/org/miniofbiz/test/TestEvents.groovy" invoke="testGroovy"/>
