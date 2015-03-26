@@ -1,0 +1,50 @@
+{
+    "_default_": {
+        "_all" : {"enabled" : false},
+        "_source" : {"enabled" : true},
+        "dynamic_templates" : [
+            {
+                "common_date" : {
+                    "match" : "*Date",
+                    "mapping" : {
+                        "type" : "date"
+                    }
+                }
+            },
+            {
+                "common_by_user_login" : {
+                    "match" : "*ByUserLogin",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed"
+                    }
+                }
+            },
+            {
+                "common_url" : {
+                    "match" : "*Url",
+                    "mapping" : {
+                        "type" : "string",
+                        "index" : "not_analyzed"
+                    }
+                }
+            },
+            {
+                "common_is" : {
+                    "match" : "is*",
+                    "mapping" : {
+                        "type" : "boolean"
+                    }
+                }
+            },
+            {
+                "common_price" : {
+                    "match" : "*_price",
+                    "mapping" : {
+                        "type" : "double"
+                    }
+                }
+            }
+        ]
+    }
+}

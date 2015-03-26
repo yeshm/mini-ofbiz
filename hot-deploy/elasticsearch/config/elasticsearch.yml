@@ -29,7 +29,7 @@
 # Cluster name identifies your cluster for auto-discovery. If you're running
 # multiple clusters on the same network, make sure you're using unique names.
 #
-#cluster.name: elasticsearch
+cluster.name: elasticsearch
 
 
 #################################### Node #####################################
@@ -209,7 +209,7 @@
 
 # Set both 'bind_host' and 'publish_host':
 #
-#network.host: 192.168.0.1
+network.host: 127.0.0.1
 
 # Set a custom port for the node to node communication (9300 by default):
 #
@@ -298,8 +298,8 @@
 # and master node is elected. Multicast discovery is the default.
 
 # Set to ensure a node sees N other master eligible nodes to be considered
-# operational within the cluster. Its recommended to set it to a higher value
-# than 1 when running more than 2 nodes in the cluster.
+# operational within the cluster. This should be set to a quorum/majority of 
+# the master-eligible nodes in the cluster.
 #
 #discovery.zen.minimum_master_nodes: 1
 
@@ -383,3 +383,27 @@
 # it unless you need it is recommended (it is disabled by default).
 #
 #http.jsonp.enable: true
+
+index:
+  analysis:
+    analyzer:
+      ik:
+        alias: [news_analyzer_ik,ik_analyzer]
+        type: org.elasticsearch.index.analysis.IkAnalyzerProvider
+      ik_max_word:
+        type: ik
+        use_smart: false
+      ik_smart:
+        type: ik
+        use_smart: true
+
+index.analysis.analyzer.default.type : "ik"
+
+#CVE-2014-3120 漏洞修复
+script.disable_dynamic: true
+
+#CVE-2015-1427 漏洞修复
+script.groovy.sandbox.enabled: false
+
+#允许跨域，这样elasticsearch-HQ才能连接上集群
+http.cors.enabled: true
