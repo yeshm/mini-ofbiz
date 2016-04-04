@@ -40,6 +40,7 @@ import org.apache.fop.apps.FOUserAgent;
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
 import org.apache.fop.apps.MimeConstants;
+import org.ofbiz.base.container.ClassLoaderContainer;
 import org.ofbiz.base.location.FlexibleLocation;
 import org.ofbiz.base.util.Debug;
 import org.ofbiz.base.util.FileUtil;
@@ -82,6 +83,12 @@ public class ApacheFopWorker {
                     File userConfigFile = FileUtil.getFile(fopPath + "/fop.xconf");
                     if (userConfigFile.exists()) {
                         fopFactory.setUserConfig(userConfigFile);
+                        URL baseUrl = new URL(fopFactory.getBaseURL());
+                        String protocol = baseUrl.getProtocol();
+                        String host = baseUrl.getHost();
+                        Integer baseport = baseUrl.getPort();
+                        Integer port = baseport + ClassLoaderContainer.portOffset;
+                        fopFactory.setBaseURL(protocol + "://" + host + ":" + port);
                     } else {
                         Debug.logWarning("FOP configuration file not found: " + userConfigFile, module);
                     }

@@ -94,6 +94,7 @@ public class EntitySaxReader implements javolution.xml.sax.ContentHandler, Error
     protected boolean maintainTxStamps = false;
     protected boolean createDummyFks = false;
     protected boolean checkDataOnly = false;
+    @Deprecated
     protected boolean doCacheClear = true;
     protected boolean disableEeca = false;
     protected enum Action {CREATE, CREATE_UPDATE, CREATE_REPLACE, DELETE}; 
@@ -177,10 +178,12 @@ public class EntitySaxReader implements javolution.xml.sax.ContentHandler, Error
         this.checkDataOnly = checkDataOnly;
     }
 
+    @Deprecated
     public boolean getDoCacheClear() {
         return this.doCacheClear;
     }
 
+    @Deprecated
     public void setDoCacheClear(boolean doCacheClear) {
         this.doCacheClear = doCacheClear;
     }
@@ -556,6 +559,7 @@ public class EntitySaxReader implements javolution.xml.sax.ContentHandler, Error
             }
 
             // check the do-cache-clear flag
+            @Deprecated
             CharSequence doCacheClear = attributes.getValue("do-cache-clear");
             if (doCacheClear != null) {
                 this.setDoCacheClear("true".equalsIgnoreCase(doCacheClear.toString()));
@@ -659,10 +663,11 @@ public class EntitySaxReader implements javolution.xml.sax.ContentHandler, Error
                         name = attributes.getQName(i);
                     }
                     try {
-                        // treat empty strings as nulls
-                        if (UtilValidate.isNotEmpty(value)) {
+                        // treat empty strings as nulls, but do NOT ignore them, instead set as null and update
+                        if (value != null) {
                             if (currentValue.getModelEntity().isField(name.toString())) {
-                                currentValue.setString(name.toString(), value.toString());
+                                String valueString = (value.length() > 0 ? value.toString() : null);
+                                currentValue.setString(name.toString(), valueString);
                                 if (Action.CREATE_REPLACE == currentAction && absentFields != null) absentFields.remove(name);
                             } else {
                                 Debug.logWarning("Ignoring invalid field name [" + name + "] found for the entity: " + currentValue.getEntityName() + " with value=" + value, module);

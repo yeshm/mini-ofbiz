@@ -1676,7 +1676,7 @@ public class MacroFormRenderer implements FormStringRenderer {
 
     public void renderTextFindField(Appendable writer, Map<String, Object> context, TextFindField textFindField) throws IOException {
         ModelFormField modelFormField = textFindField.getModelFormField();
-        String defaultOption = textFindField.getDefaultOption();
+        String defaultOption = textFindField.getDefaultOption(context);
         String className = "";
         String alert = "false";
         String opEquals = "";
@@ -1717,7 +1717,7 @@ public class MacroFormRenderer implements FormStringRenderer {
             titleStyle = modelFormField.getTitleStyle();
         }
         String ignoreCase = UtilProperties.getMessage("conditional", "ignore_case", locale);
-        boolean ignCase = textFindField.getIgnoreCase();
+        boolean ignCase = textFindField.getIgnoreCase(context);
         boolean hideIgnoreCase = textFindField.getHideIgnoreCase();
         StringWriter sr = new StringWriter();
         sr.append("<@renderTextFindField ");
@@ -1896,17 +1896,33 @@ public class MacroFormRenderer implements FormStringRenderer {
         String formName = "";
         String defaultDateTimeString = "";
         StringBuilder imgSrc = new StringBuilder();
+
         // add calendar pop-up button and seed data IF this is not a "time" type date-find
         if (!"time".equals(dateFindField.getType())) {
             formName = modelFormField.getModelForm().getCurrentFormName(context);
             defaultDateTimeString = UtilHttp.encodeBlanks(modelFormField.getEntry(context, dateFindField.getDefaultDateTimeString(context)));
             this.appendContentUrl(imgSrc, "/images/cal.gif");
         }
-        String defaultOptionFrom = dateFindField.getDefaultOptionFrom();
-        String defaultOptionThru = dateFindField.getDefaultOptionThru();
+        String defaultOptionFrom = dateFindField.getDefaultOptionFrom(context);
+        String defaultOptionThru = dateFindField.getDefaultOptionThru(context);
         String value2 = modelFormField.getEntry(context);
         if (value2 == null) {
             value2 = "";
+        }
+
+        //check if values are present on parameters (from a previous search)
+        if (context.containsKey("parameters")) {
+            Map<String, Object> parameters = UtilGenerics.checkMap(context.get("parameters"));
+            if (name != null) {
+                String nameValue0 = name.concat("_fld0_value");
+                if (parameters.containsKey(nameValue0)) {
+                    value = (String)parameters.get(nameValue0);   
+                }
+                String nameValue1 = name.concat("_fld1_value");
+                if (parameters.containsKey(nameValue1)) {
+                    value2 = (String)parameters.get(nameValue1);  
+                }  
+            }
         }
         String titleStyle = "";
         if (UtilValidate.isNotEmpty(modelFormField.getTitleStyle())) {
@@ -1924,6 +1940,8 @@ public class MacroFormRenderer implements FormStringRenderer {
         sr.append(localizedInputTitle);
         sr.append("\" value=\"");
         sr.append(value);
+        sr.append("\" value2=\"");
+        sr.append(value2);
         sr.append("\" size=\"");
         sr.append(Integer.toString(size));
         sr.append("\" maxlength=\"");
@@ -2019,7 +2037,10 @@ public class MacroFormRenderer implements FormStringRenderer {
         boolean readonly = lookupField.readonly;
         // add lookup pop-up button
         String descriptionFieldName = lookupField.getDescriptionFieldName();
-        String formName = modelFormField.getModelForm().getCurrentFormName(context);
+        String formName = modelFormField.getParentFormName();
+        if (UtilValidate.isEmpty(formName)) {
+            formName = modelFormField.getModelForm().getCurrentFormName(context);
+        }
         StringBuilder targetParameterIter = new StringBuilder();
         StringBuilder imgSrc = new StringBuilder();
         // FIXME: refactor using the StringUtils methods
@@ -3073,7 +3094,7 @@ public class MacroFormRenderer implements FormStringRenderer {
             parameters.append(parameter.getName());
             parameters.append("'");
             parameters.append(",'value':'");
-            parameters.append(parameter.getValue(context));
+            parameters.append(StringUtil.htmlEncoder.encode(parameter.getValue(context)));
             parameters.append("'}");
         }
         parameters.append("]");

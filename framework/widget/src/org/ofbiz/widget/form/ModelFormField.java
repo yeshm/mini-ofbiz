@@ -117,6 +117,7 @@ public class ModelFormField {
     protected String sortFieldHelpText = "";
     protected String headerLink;
     protected String headerLinkStyle;
+    protected String parentFormName;
 
     /** On Change Event areas to be updated. */
     protected List<UpdateArea> onChangeUpdateAreas;
@@ -163,6 +164,7 @@ public class ModelFormField {
         this.sortFieldHelpText = fieldElement.getAttribute("sort-field-help-text");
         this.headerLink = fieldElement.getAttribute("header-link");
         this.headerLinkStyle = fieldElement.getAttribute("header-link-style");
+        this.parentFormName = fieldElement.getAttribute("form-name");
 
 
         String positionStr = fieldElement.getAttribute("position");
@@ -976,7 +978,12 @@ public class ModelFormField {
 
     public String getIdName() {
         if (UtilValidate.isNotEmpty(idName)) return idName;
-        return this.modelForm.getName() + "_" + this.getFieldName();
+        String parentFormName = this.getParentFormName();
+        if (UtilValidate.isNotEmpty(parentFormName)) {
+            return parentFormName + "_" + this.getFieldName();
+        } else {
+           return this.modelForm.getName() + "_" + this.getFieldName();
+        }
     }
 
     public String getCurrentContainerId(Map<String, Object> context) {
@@ -1266,6 +1273,11 @@ public class ModelFormField {
      */
     public void setModelForm(ModelForm modelForm) {
         this.modelForm = modelForm;
+    }
+
+
+    public String getParentFormName() {
+        return this.parentFormName;
     }
 
 
@@ -2198,8 +2210,17 @@ public class ModelFormField {
                 retVal = this.description.expandString(localContext, locale);
             }
             // try to get the entry for the field if description doesn't expand to anything
-            if (UtilValidate.isEmpty(retVal)) retVal = fieldValue;
-            if (UtilValidate.isEmpty(retVal)) retVal = "";
+            if (UtilValidate.isEmpty(retVal)) {
+                retVal = fieldValue;
+            } 
+            if (UtilValidate.isEmpty(retVal)) {
+                retVal = "";
+            } else if (this.getModelFormField().getEncodeOutput()) {
+                StringUtil.SimpleEncoder simpleEncoder = (StringUtil.SimpleEncoder) context.get("simpleEncoder");
+                if (simpleEncoder != null) {
+                    retVal = simpleEncoder.encode(retVal);
+                }
+            }
             return retVal;
         }
 
@@ -3453,12 +3474,38 @@ public class ModelFormField {
             return this.defaultOption;
         }
 
+        public String getDefaultOption(Map<String, Object> context) {
+            String defaultOption = getDefaultOption();
+
+            Map<String, Object> parameters = UtilGenerics.checkMap(context.get("parameters"), String.class, Object.class);
+            if (UtilValidate.isNotEmpty(parameters)) {
+                String fieldName = this.getModelFormField().getName();
+                if (parameters.containsKey(fieldName)) {
+                    defaultOption = (String) parameters.get(fieldName.concat("_op"));
+                }
+            }
+            return defaultOption;
+        }
+
         public boolean getHideIgnoreCase() {
             return this.hideIgnoreCase;
         }
 
         public boolean getHideOptions() {
             return this.hideOptions;
+        }
+
+        public boolean getIgnoreCase(Map<String, Object> context) {
+            Boolean ignoreCase = getIgnoreCase();
+
+            Map<String, Object> parameters = UtilGenerics.checkMap(context.get("parameters"), String.class, Object.class);
+            if (UtilValidate.isNotEmpty(parameters)) {
+                String fieldName = this.getModelFormField().getName();
+                if (parameters.containsKey(fieldName)) {
+                    ignoreCase = "Y".equals((String) parameters.get(fieldName.concat("_ic")));
+                }
+            }
+            return ignoreCase;
         }
 
         @Override
@@ -3490,8 +3537,34 @@ public class ModelFormField {
             return this.defaultOptionFrom;
         }
 
+        public String getDefaultOptionFrom(Map<String, Object> context) {
+            String defaultOption = getDefaultOptionFrom();
+
+            Map<String, Object> parameters = UtilGenerics.checkMap(context.get("parameters"), String.class, Object.class);
+            if (UtilValidate.isNotEmpty(parameters)) {
+                String fieldName = this.getModelFormField().getName();
+                if (parameters.containsKey(fieldName.concat("_fld0_value"))){
+                    defaultOption = (String)parameters.get(fieldName.concat("_fld0_op"));
+                }
+            }
+            return defaultOption;
+        }
+
         public String getDefaultOptionThru() {
             return this.defaultOptionThru;
+        }
+
+        public String getDefaultOptionThru(Map<String, Object> context) {
+            String defaultOption = getDefaultOptionThru();
+
+            Map<String, Object> parameters = UtilGenerics.checkMap(context.get("parameters"), String.class, Object.class);
+            if (UtilValidate.isNotEmpty(parameters)) {
+                String fieldName = this.getModelFormField().getName();
+                if( parameters.containsKey(fieldName.concat("_fld1_value"))) {
+                    defaultOption = (String)parameters.get(fieldName.concat("_fld1_op"));
+                }
+            }
+            return defaultOption;
         }
     }
 
@@ -3525,6 +3598,7 @@ public class ModelFormField {
 
     public static class LookupField extends TextField {
         protected FlexibleStringExpander formName;
+        protected String parentFormName;
         protected String descriptionFieldName;
         protected String targetParameter;
         protected String lookupPresentation;
@@ -3538,6 +3612,7 @@ public class ModelFormField {
         public LookupField(Element element, ModelFormField modelFormField) {
             super(element, modelFormField);
             this.formName = FlexibleStringExpander.getInstance(element.getAttribute("target-form-name"));
+            this.parentFormName = element.getAttribute("form-name");
             this.descriptionFieldName = element.getAttribute("description-field-name");
             this.targetParameter = element.getAttribute("target-parameter");
             this.lookupPresentation = element.getAttribute("presentation");
@@ -3565,6 +3640,10 @@ public class ModelFormField {
 
         public String getFormName(Map<String, Object> context) {
             return this.formName.expandString(context);
+        }
+
+        public String getParentFormName() {
+            return this.parentFormName;
         }
 
         public List<String> getTargetParameterList() {

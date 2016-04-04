@@ -330,7 +330,11 @@ public class FindServices {
                 fieldOp = entityOperators.get(operation);
             }
         } else {
-            fieldOp = EntityOperator.EQUALS;
+            if(UtilValidate.isNotEmpty(UtilGenerics.toList(fieldValue))){
+                fieldOp = EntityOperator.IN;
+            } else {
+                fieldOp = EntityOperator.EQUALS;   
+            }
         }
         Object fieldObject = fieldValue;
         if ((fieldOp != EntityOperator.IN && fieldOp != EntityOperator.NOT_IN ) || !(fieldValue instanceof Collection<?>)) {
@@ -432,7 +436,7 @@ public class FindServices {
 
         int start = viewIndex.intValue() * viewSize.intValue();
         List<GenericValue> list = null;
-        Integer listSize = null;
+        Integer listSize = 0;
         try {
             EntityListIterator it = (EntityListIterator) result.get("listIt");
             list = it.getPartialList(start+1, viewSize); // list starts at '1'

@@ -263,7 +263,9 @@ function ajaxUpdateArea(areaId, target, targetParams) {
   * form of: areaId, target, target parameters [, areaId, target, target parameters...].
 */
 function ajaxUpdateAreas(areaCsvString) {
-    var areaArray = areaCsvString.split(",");
+    /*split all parameters separate by comma, the regExp manage areaId,target,param1=a&param2={b,c,d}&param3=e as three parameters*/
+    var regExpArea = /,(?=(?:[^{}]*{[^{}]*})*[^{}]*$)/g; 
+    var areaArray = areaCsvString.split(regExpArea);
     var numAreas = parseInt(areaArray.length / 3);
     for (var i = 0; i < numAreas * 3; i = i + 3) {
         var areaId = areaArray[i];
@@ -820,7 +822,6 @@ function getJSONuiLabels(requiredLabels) {
             url: "getJSONuiLabelArray",
             type: "POST",
             data: {"requiredLabels" : requiredLabelsStr},
-            async: false,
             success: function(data) {
                 returnVal = data;
             }
@@ -848,7 +849,6 @@ function getJSONuiLabel(uiResource, errUiLabel) {
             url: "getJSONuiLabel",
             type: "POST",
             data: {"requiredLabel" : requiredLabelStr},
-            async: false,
             success: function(data) {
                 returnVal = data[0];
             }

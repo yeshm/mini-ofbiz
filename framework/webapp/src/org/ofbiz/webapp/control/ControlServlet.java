@@ -70,7 +70,11 @@ public class ControlServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        if (Debug.infoOn()) Debug.logInfo("LOADING WEBAPP [" + config.getServletContext().getContextPath().substring(1) + "] " + config.getServletContext().getServletContextName() + ", located at " + config.getServletContext().getRealPath("/"), module);
+        if (Debug.infoOn()) {
+            ServletContext servletContext = config.getServletContext();
+            String webappName = servletContext.getContextPath().length() != 0 ? servletContext.getContextPath().substring(1) : "";
+            Debug.logInfo("LOADING WEBAPP [" + webappName + "] " + servletContext.getServletContextName() + ", located at " + servletContext.getRealPath("/"), module);
+        }
 
         // configure custom BSF engines
         configureBsf();
@@ -96,18 +100,11 @@ public class ControlServlet extends HttpServlet {
         HttpSession session = request.getSession();
 
         // setup DEFAULT character encoding and content type, this will be overridden in the RequestHandler for view rendering
-        String charset = getServletContext().getInitParameter("charset");
-        if (UtilValidate.isEmpty(charset)) charset = request.getCharacterEncoding();
-        if (UtilValidate.isEmpty(charset)) charset = "UTF-8";
-        if (Debug.verboseOn()) Debug.logVerbose("The character encoding of the request is: [" + request.getCharacterEncoding() + "]. The character encoding we will use for the request and response is: [" + charset + "]", module);
-
-        if (!"none".equals(charset)) {
-            request.setCharacterEncoding(charset);
-        }
+        String charset = request.getCharacterEncoding();
 
         // setup content type
         String contentType = "text/html";
-        if (charset.length() > 0 && !"none".equals(charset)) {
+        if (UtilValidate.isNotEmpty(charset) && !"none".equals(charset)) {
             response.setContentType(contentType + "; charset=" + charset);
             response.setCharacterEncoding(charset);
         } else {
