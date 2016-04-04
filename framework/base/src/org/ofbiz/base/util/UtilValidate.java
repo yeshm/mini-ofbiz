@@ -1052,7 +1052,9 @@ public class UtilValidate {
     public static boolean isCreditCard(String stPassed) {
         if (isEmpty(stPassed)) return defaultEmptyOK;
         String st = stripCharsInBag(stPassed, creditCardDelimiters);
-
+		
+		if (!isInteger(st)) return false;
+		
         // encoding only works on cars with less the 19 digits
         if (st.length() > 19) return false;
         return sumIsMod10(getLuhnSum(st));
@@ -1333,8 +1335,8 @@ public class UtilValidate {
         if (ean == null || ean.length() != 13) {
             throw new IllegalArgumentException("Invalid EAN length; must be 13 characters");
         }
-        char csum = ean.charAt(13);
-        char calcSum = calcChecksum(ean, 13);
+        char csum = ean.charAt(12);
+        char calcSum = calcChecksum(ean, 12);
         return csum == calcSum;
     }
 

@@ -420,12 +420,32 @@ under the License.
             <arg value="-portoffset=${portoffset}"/>
         </java>
     </target>
+    <target name="start-secure"
+            description="Same than start but pre-loading the contrast-rO0 lib (from OFBiz roo dir) to secure OFBiz from the deserialization issue">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.initial.param}"/>
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="-javaagent:${ofbiz.home.dir}/contrast-rO0.jar"/>
+            <arg value="start"/>
+            <arg value="-portoffset=${portoffset}"/>
+        </java>
+    </target>
     <target name="start-batch"
             description="Start OFBiz as a separate process. Use -Dportoffset=portNumber to shift all ports with the portNumber value.">
         <java jar="ofbiz.jar" fork="true" spawn="true">
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <arg value="start-batch"/>
+            <arg value="-portoffset=${portoffset}"/>
+        </java>
+    </target>
+    <target name="start-batch-secure"
+        description="Same than start-batch but pre-loading the contrast-rO0 lib (from OFBiz roo dir) to secure OFBiz from the deserialization issue">
+        <java jar="ofbiz.jar" fork="true" spawn="true">
+            <jvmarg value="${memory.initial.param}"/>
+            <jvmarg value="${memory.max.param}"/>
+            <jvmarg value="-javaagent:${ofbiz.home.dir}/contrast-rO0.jar"/>
             <arg value="start-batch"/>
             <arg value="-portoffset=${portoffset}"/>
         </java>
@@ -460,6 +480,16 @@ under the License.
             <jvmarg value="${memory.initial.param}"/>
             <jvmarg value="${memory.max.param}"/>
             <jvmarg value="${memory.maxpermsize.param}"/>
+            <arg value="both"/>
+            <arg value="-portoffset=${portoffset}"/>
+        </java>
+    </target>
+    <target name="start-both-secure"
+        description="Same than start-pos but pre-loading the contrast-rO0 lib (from OFBiz roo dir) to secure OFBiz from the deserialization issue">
+        <java jar="ofbiz.jar" fork="true">
+            <jvmarg value="${memory.initial.param}"/>
+            <jvmarg value="-javaagent:${ofbiz.home.dir}/contrast-rO0.jar"/>
+            <jvmarg value="${memory.max.param}"/>
             <arg value="both"/>
             <arg value="-portoffset=${portoffset}"/>
         </java>
@@ -757,16 +787,29 @@ under the License.
         sub-target of create-tenant, can't used alone => no description, to not clutter "ant -p" -->
     <target name="create-tenant-on-Derby" depends="get-tenant-data" if="isDerby">
         <echo message="Installing on Derby"/>
-        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-Derby.xml" tofile="runtime/tmp/tmpTenantData.xml">
+        <!-- Below code will handle the case of optional domain name. It will remove the TenantDomainName entry from tmpTenantData.xml file
+            if domain name is empty, so that record would not get created. -->
+        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-Derby.xml" tofile="runtime/tmp/tmpTenantData.xml"/>
+        <if>
+          <equals arg1="${domainName}" arg2="" />
+          <then>
+            <replace file="runtime/tmp/tmpTenantData.xml">
+               <replacetoken><![CDATA[<TenantDomainName tenantId="@tenantId@" domainName="@domainName@" />]]></replacetoken>
+               <replacevalue><![CDATA[]]></replacevalue>
+            </replace>
+          </then>
+        </if>
+        <copy file="runtime/tmp/tmpTenantData.xml" tofile="runtime/tmp/tmpFilteredTenantData.xml">
             <filterset>
                 <filter token="tenantId" value="${tenantId}"/>
                 <filter token="tenantName" value="${tenantName}"/>
             </filterset>
         </copy>
         <antcall target="load-file">
-            <param name="data-file" value="runtime/tmp/tmpTenantData.xml"/>
+            <param name="data-file" value="runtime/tmp/tmpFilteredTenantData.xml"/>
         </antcall>
         <delete file="runtime/tmp/tmpTenantData.xml"/>
+        <delete file="runtime/tmp/tmpFilteredTenantData.xml"/>
         <antcall target="load-tenant-data-readers"/>
         <antcall target="load-tenant-admin-user-login">
             <param name="userLoginId" value="${tenantId}-admin"/>
@@ -777,7 +820,19 @@ under the License.
         sub-target of create-tenant, can't used alone => no description, to not clutter "ant -p" -->
     <target name="create-tenant-on-MySQL" depends="get-tenant-data" if="isMySQL">
         <echo message="Installing on MySQL"/>
-        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-MySQL.xml" tofile="runtime/tmp/tmpTenantData.xml">
+        <!-- Below code will handle the case of optional domain name. It will remove the TenantDomainName entry from tmpTenantData.xml file
+            if domain name is empty, so that record would not get created. -->
+        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-MySQL.xml" tofile="runtime/tmp/tmpTenantData.xml"/>
+        <if>
+          <equals arg1="${domainName}" arg2="" />
+          <then>
+            <replace file="runtime/tmp/tmpTenantData.xml">
+               <replacetoken><![CDATA[<TenantDomainName tenantId="@tenantId@" domainName="@domainName@" />]]></replacetoken>
+               <replacevalue><![CDATA[]]></replacevalue>
+            </replace>
+          </then>
+        </if>
+        <copy file="runtime/tmp/tmpTenantData.xml" tofile="runtime/tmp/tmpFilteredTenantData.xml">
             <filterset>
                 <filter token="tenantId" value="${tenantId}"/>
                 <filter token="tenantName" value="${tenantName}"/>
@@ -787,9 +842,10 @@ under the License.
             </filterset>
         </copy>
         <antcall target="load-file">
-            <param name="data-file" value="runtime/tmp/tmpTenantData.xml"/>
+            <param name="data-file" value="runtime/tmp/tmpFilteredTenantData.xml"/>
         </antcall>
         <delete file="runtime/tmp/tmpTenantData.xml"/>
+        <delete file="runtime/tmp/tmpFilteredTenantData.xml"/>
         <antcall target="load-tenant-data-readers"/>
         <antcall target="load-tenant-admin-user-login">
             <param name="userLoginId" value="${tenantId}-admin"/>
@@ -800,7 +856,19 @@ under the License.
         sub-target of create-tenant, can't used alone => no description, to not clutter "ant -p" -->
     <target name="create-tenant-on-Oracle" depends="get-tenant-data" if="isOracle">
         <echo message="Installing on Oracle"/>
-        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-Oracle.xml" tofile="runtime/tmp/tmpTenantData.xml">
+        <!-- Below code will handle the case of optional domain name. It will remove the TenantDomainName entry from tmpTenantData.xml file
+            if domain name is empty, so that record would not get created. -->
+        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-Oracle.xml" tofile="runtime/tmp/tmpTenantData.xml"/>
+        <if>
+          <equals arg1="${domainName}" arg2="" />
+          <then>
+            <replace file="runtime/tmp/tmpTenantData.xml">
+               <replacetoken><![CDATA[<TenantDomainName tenantId="@tenantId@" domainName="@domainName@" />]]></replacetoken>
+               <replacevalue><![CDATA[]]></replacevalue>
+            </replace>
+          </then>
+        </if>
+        <copy file="runtime/tmp/tmpTenantData.xml" tofile="runtime/tmp/tmpFilteredTenantData.xml">
             <filterset>
                 <filter token="tenantId" value="${tenantId}"/>
                 <filter token="tenantName" value="${tenantName}"/>
@@ -810,9 +878,10 @@ under the License.
             </filterset>
         </copy>
         <antcall target="load-file">
-            <param name="data-file" value="runtime/tmp/tmpTenantData.xml"/>
+            <param name="data-file" value="runtime/tmp/tmpFilteredTenantData.xml"/>
         </antcall>
         <delete file="runtime/tmp/tmpTenantData.xml"/>
+        <delete file="runtime/tmp/tmpFilteredTenantData.xml"/>
         <antcall target="load-tenant-data-readers"/>
         <antcall target="load-tenant-admin-user-login">
             <param name="userLoginId" value="${tenantId}-admin"/>
@@ -823,7 +892,19 @@ under the License.
         sub-target of create-tenant, can't used alone => no description, to not clutter "ant -p" -->
     <target name="create-tenant-on-PostgreSQL" depends="get-tenant-data" if="isPostgreSQL">
         <echo message="Installing on PostgreSQL"/>
-        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-PostgreSQL.xml" tofile="runtime/tmp/tmpTenantData.xml">
+        <!-- Below code will handle the case of optional domain name. It will remove the TenantDomainName entry from tmpTenantData.xml file
+            if domain name is empty, so that record would not get created. -->
+        <copy file="${basedir}/framework/resources/templates/AdminNewTenantData-PostgreSQL.xml" tofile="runtime/tmp/tmpTenantData.xml"/>
+        <if>
+          <equals arg1="${domainName}" arg2="" />
+          <then>
+            <replace file="runtime/tmp/tmpTenantData.xml">
+               <replacetoken><![CDATA[<TenantDomainName tenantId="@tenantId@" domainName="@domainName@" />]]></replacetoken>
+               <replacevalue><![CDATA[]]></replacevalue>
+            </replace>
+          </then>
+        </if>
+        <copy file="runtime/tmp/tmpTenantData.xml" tofile="runtime/tmp/tmpFilteredTenantData.xml">
             <filterset>
                 <filter token="tenantId" value="${tenantId}"/>
                 <filter token="tenantName" value="${tenantName}"/>
@@ -833,9 +914,10 @@ under the License.
             </filterset>
         </copy>
         <antcall target="load-file">
-            <param name="data-file" value="runtime/tmp/tmpTenantData.xml"/>
+            <param name="data-file" value="runtime/tmp/tmpFilteredTenantData.xml"/>
         </antcall>
         <delete file="runtime/tmp/tmpTenantData.xml"/>
+        <delete file="runtime/tmp/tmpFilteredTenantData.xml"/>
         <antcall target="load-tenant-data-readers"/>
         <antcall target="load-tenant-admin-user-login">
             <param name="userLoginId" value="${tenantId}-admin"/>
@@ -1130,8 +1212,8 @@ under the License.
         <sonar:sonar key="org.apache:ofbiz" version="${info.entry.commit(revision)}" xmlns:sonar="antlib:org.sonar.ant:sonar"/>
         <property name="sonar.dynamicAnalysis" value="reuseReports" />
         <property name="sonar.cobertura.reportPath" value="runtime/logs/cobertura-report/coverage.xml"/>
-        <property name="sonar.java.source" value="1.6" />
-        <property name="sonar.java.target" value="1.6" />
+        <property name="sonar.java.source" value="1.7" />
+        <property name="sonar.java.target" value="1.7" />
         <!-- default for jdbc url: jdbc:mysql://localhost:3306/sonar?useUnicode=true&amp;characterEncoding=utf8-->
         <property name="sonar.jdbc.url" value="${sonar.jdbc.url}"/>
         <property name="sonar.jdbc.driverClassName" value="com.mysql.jdbc.Driver" />
@@ -1315,7 +1397,7 @@ under the License.
             <arg value="-kek"/>
             <classpath>
                 <path location="framework/base/build/lib/ofbiz-base.jar"/>
-                <path location="framework/base/lib/commons/commons-codec-1.4.jar"/>
+                <path location="framework/base/lib/commons/commons-codec-1.10.jar"/>
             </classpath>
         </java>
     </target>

@@ -272,8 +272,13 @@ under the License.
                                                 <tr valign="top">
                                                     <td><b>${uiLabelMap.OrderRemaining}</b></td>
                                                     <td>${remainingQuantity}</td>
-                                                    <td><b>${uiLabelMap.OrderQtyShipped}</b></td>
-                                                    <td>${shippedQuantity}</td>
+                                                    <#if orderHeader.orderTypeId == "PURCHASE_ORDER">
+                                                        <td><b>${uiLabelMap.OrderPlannedInReceive}</b></td>
+                                                        <td>${totalReceived}</td>
+                                                    <#else>
+                                                        <td><b>${uiLabelMap.OrderQtyShipped}</b></td>
+                                                        <td>${shippedQuantity}</td>
+                                                    </#if>
                                                 </tr>
                                                 <tr valign="top">
                                                     <td><b>${uiLabelMap.OrderShortfalled}</b></td>
@@ -650,6 +655,47 @@ under the License.
                                     <td colspan="4">&nbsp;</td>
                                 </tr>
                             </#list>
+                        </#if>
+                        <#if orderItem.comments?has_content>
+                          <tr<#if itemClass == "1"> class="alternate-row"</#if>>
+                            <td>&nbsp;</td>
+                            <td>
+                              <div class= "screenlet">
+                                <div class = "screenlet-body">
+                                  <table>
+                                    <tr>
+                                      <td align="right">
+                                        <span class="label">${uiLabelMap.CommonComments}</span>
+                                      </td>
+                                      <td align="">
+                                        <span class="label">${uiLabelMap.CommonCurrent}:</span>&nbsp;${orderItem.comments}
+                                        <#assign orderItemSeqId = orderItem.orderItemSeqId!>
+                                        <#if comments?has_content>
+                                          <hr/>
+                                          <#list comments as comm>
+                                            <#if comm.orderItemSeqId?has_content && orderItemSeqId?has_content && comm.orderItemSeqId == orderItemSeqId>
+                                              <#if comm.changeComments?has_content>
+                                                <div>
+                                                ${comm.changeComments}
+                                                &nbsp;
+                                                <#if comm.changeDatetime?has_content>${Static["org.ofbiz.base.util.UtilFormatOut"].formatDateTime(comm.changeDatetime, "", locale, timeZone)?default("0000-00-00 00:00:00")}</#if>  &nbsp;  ${uiLabelMap.CommonBy} -  [${comm.changeUserLogin}]
+                                                </div>
+                                              </#if>
+                                            </#if>
+                                          </#list>
+                                        </#if>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </div>
+                              </div>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
                         </#if>
                         <#if itemClass == "2">
                             <#assign itemClass = "1">

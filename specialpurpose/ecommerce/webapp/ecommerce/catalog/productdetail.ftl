@@ -621,7 +621,7 @@ $(function(){
                   <strong><div id="variant_price_display"> </div></strong>
                 </div>
               </#if>
-              <#if (availableInventory?exists) && (availableInventory <= 0)>
+              <#if (availableInventory??) && (availableInventory <= 0) && product.requireAmount?default("N") == "N">
                 <#assign inStock = false />
               </#if>
             </#if>
@@ -862,7 +862,7 @@ $(function(){
     </div>
     
     <#-- special cross/up-sell area using commonFeatureResultIds (from common feature product search) -->
-    <#if comsmonFeatureResultIds?has_content>
+    <#if commonFeatureResultIds?has_content>
         <h2>${uiLabelMap.ProductSimilarProducts}</h2>
     
         <div class="productsummary-container">

@@ -122,15 +122,16 @@ under the License.
       <script type="text/javascript">
         <#-- If language specific lib is found, use date / time converter else just copy the value fields -->
         if (Date.CultureInfo != undefined) {
-          var initDate = <#if value?has_content>jQuery("#${id}_i18n").val()<#else>""</#if>;
+          var initDate = <#if value?has_content>jQuery("#${id}").val()<#else>""</#if>;
           if (initDate != "") {
             var dateFormat = Date.CultureInfo.formatPatterns.shortDate<#if shortDateInput?exists && !shortDateInput> + " " + Date.CultureInfo.formatPatterns.longTime</#if>;
-            <#-- bad hack because the JS date parser doesn't understand dots in the date / time string -->
+            <#-- The JS date parser doesn't understand the dot before ms in the date/time string. The ms here should be always 000 -->
             if (initDate.indexOf('.') != -1) {
               initDate = initDate.substring(0, initDate.indexOf('.'));
             }
-            var ofbizTime = "<#if shortDateInput?exists && shortDateInput>yyyy-MM-dd<#else>yyyy-MM-dd HH:mm:ss</#if>";
-            var dateObj = Date.parse(initDate, ofbizTime);
+            jQuery("#${id}").val(initDate);
+            var ofbizTime = "<#if shortDateInput?? && shortDateInput>yyyy-MM-dd<#else>yyyy-MM-dd HH:mm:ss</#if>";
+            var dateObj = Date.parseExact(initDate, ofbizTime);
             var formatedObj = dateObj.toString(dateFormat);
             jQuery("#${id}_i18n").val(formatedObj);
           }
@@ -139,7 +140,7 @@ under the License.
             var ofbizTime = "<#if shortDateInput?exists && shortDateInput>yyyy-MM-dd<#else>yyyy-MM-dd HH:mm:ss</#if>";
             var newValue = ""
             if (this.value != "") {
-              var dateObj = Date.parse(this.value, ofbizTime);
+              var dateObj = Date.parseExact(this.value, ofbizTime);
               var dateFormat = Date.CultureInfo.formatPatterns.shortDate<#if shortDateInput?exists && !shortDateInput> + " " + Date.CultureInfo.formatPatterns.longTime</#if>;
               newValue = dateObj.toString(dateFormat);
             }
@@ -148,7 +149,7 @@ under the License.
           jQuery("#${id}_i18n").change(function() {
             var dateFormat = Date.CultureInfo.formatPatterns.shortDate<#if shortDateInput?exists && !shortDateInput> + " " + Date.CultureInfo.formatPatterns.longTime</#if>,
             newValue = "",
-            dateObj = Date.parse(this.value, dateFormat),
+            dateObj = Date.parseExact(this.value, dateFormat),
             ofbizTime;
             if (this.value != "" && dateObj !== null) {
               ofbizTime = "<#if shortDateInput?exists && shortDateInput>yyyy-MM-dd<#else>yyyy-MM-dd HH:mm:ss</#if>";
@@ -478,7 +479,7 @@ under the License.
   </#if>
 </#macro>
 
-<#macro renderDateFindField className alert name localizedInputTitle value size maxlength dateType formName defaultDateTimeString imgSrc localizedIconTitle titleStyle defaultOptionFrom defaultOptionThru opEquals opSameDay opGreaterThanFromDayStart opGreaterThan opGreaterThan opLessThan opUpToDay opUpThruDay opIsEmpty>
+<#macro renderDateFindField className alert name localizedInputTitle value value2 size maxlength dateType formName defaultDateTimeString imgSrc localizedIconTitle titleStyle defaultOptionFrom defaultOptionThru opEquals opSameDay opGreaterThanFromDayStart opGreaterThan opGreaterThan opLessThan opUpToDay opUpThruDay opIsEmpty>
   <span class="view-calendar">
     <input id="${name?html}_fld0_value" type="text" <@renderClass className alert /><#if name?has_content> name="${name?html}_fld0_value"</#if><#if localizedInputTitle?has_content> title="${localizedInputTitle}"</#if><#if value?has_content> value="${value}"</#if><#if size?has_content> size="${size}"</#if><#if maxlength?has_content> maxlength="${maxlength}"</#if>/><#rt/>
     <#if dateType != "time">

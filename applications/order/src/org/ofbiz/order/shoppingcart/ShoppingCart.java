@@ -51,6 +51,7 @@ import org.ofbiz.base.util.UtilMisc;
 import org.ofbiz.base.util.UtilNumber;
 import org.ofbiz.base.util.UtilProperties;
 import org.ofbiz.base.util.UtilValidate;
+import org.ofbiz.common.DataModelConstants;
 import org.ofbiz.entity.Delegator;
 import org.ofbiz.entity.DelegatorFactory;
 import org.ofbiz.entity.GenericEntityException;
@@ -380,6 +381,9 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
 
     public void setLocale(Locale locale) {
         this.locale = locale;
+        for (ShoppingCartItem cartItem : cartLines) {
+            cartItem.setLocale(locale);
+        }
     }
 
     public void setOrderName(String orderName) {
@@ -936,8 +940,8 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
         if (cartLines.size() <= index) return;
         ShoppingCartItem item = cartLines.remove(index);
 
-        // set quantity to 0 to trigger necessary events
-        item.setQuantity(BigDecimal.ZERO, dispatcher, this);
+        // set quantity to 0 to trigger necessary events, but skip price calc and inventory checks
+        item.setQuantity(BigDecimal.ZERO, dispatcher, this, true, true, false, true);
     }
 
     /** Moves a line item to a different index. */
@@ -2666,11 +2670,8 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
     /** Returns the total from the cart, including tax/shipping. */
     public BigDecimal getGrandTotal() {
         // sales tax and shipping are not stored as adjustments but rather as part of the ship group
-        // Debug.logInfo("Subtotal:" + this.getSubTotal() + " Shipping:" + this.getTotalShipping() + "SalesTax: "+ this.getTotalSalesTax() + " others: " + this.getOrderOtherAdjustmentTotal(), module);
-        BigDecimal grandTotal = this.getSubTotal().add(this.getTotalShipping()).add(this.getTotalSalesTax()).add(this.getOrderOtherAdjustmentTotal());
-        // Debug.logInfo("Grand Total before rounding:" + grandTotal, module);
-        grandTotal = grandTotal.setScale(2, BigDecimal.ROUND_HALF_UP);
-        return grandTotal;
+        // Debug.logInfo("Subtotal:" + this.getSubTotal() + " Shipping:" + this.getTotalShipping() + "SalesTax: "+ this.getTotalSalesTax() + " others: " + this.getOrderOtherAdjustmentTotal() + " global: " + this.getOrderGlobalAdjustments(), module);
+        return this.getSubTotal().add(this.getTotalShipping()).add(this.getTotalSalesTax()).add(this.getOrderOtherAdjustmentTotal()).add(this.getOrderGlobalAdjustments());
     }
 
     public BigDecimal getDisplaySubTotal() {
@@ -2680,7 +2681,20 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
         }
         return itemsTotal;
     }
-
+    public BigDecimal getOrderGlobalAdjustments() {
+        List cartAdjustments = this.getAdjustments();
+        List tempAdjustmentsList = FastList.newInstance();
+        if (cartAdjustments != null) {
+            Iterator<GenericValue> cartAdjustmentIter = cartAdjustments.iterator();
+            while (cartAdjustmentIter.hasNext()) {
+                GenericValue checkOrderAdjustment = (GenericValue) cartAdjustmentIter.next();
+                if (UtilValidate.isEmpty(checkOrderAdjustment.getString("shipGroupSeqId")) || DataModelConstants.SEQ_ID_NA.equals(checkOrderAdjustment.getString("shipGroupSeqId"))) {
+                    tempAdjustmentsList.add(checkOrderAdjustment);
+                }
+            }
+        }
+        return OrderReadHelper.calcOrderAdjustments(tempAdjustmentsList, this.getSubTotal(), false, true, true);
+    }
     public BigDecimal getDisplayTaxIncluded() {
         BigDecimal taxIncluded  = getDisplaySubTotal().subtract(getSubTotal());
         return taxIncluded.setScale(taxFinalScale, taxRounding);
@@ -2696,7 +2710,7 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
 
     /** Returns the total from the cart, including tax/shipping. */
     public BigDecimal getDisplayGrandTotal() {
-        return this.getDisplaySubTotal().add(this.getTotalShipping()).add(this.getTotalSalesTax()).add(this.getOrderOtherAdjustmentTotal());
+        return this.getDisplaySubTotal().add(this.getTotalShipping()).add(this.getTotalSalesTax()).add(this.getOrderOtherAdjustmentTotal()).add(this.getOrderGlobalAdjustments());
     }
 
     public BigDecimal getOrderOtherAdjustmentTotal() {
@@ -3511,7 +3525,17 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
             for(ShoppingCartItem item : cartLineItems) {
                 //Debug.logInfo("Item qty: " + item.getQuantity(), module);
                 try {
-                    item.explodeItem(this, dispatcher);
+                    int thisIndex = items().indexOf(item);
+                    List<ShoppingCartItem> explodedItems = item.explodeItem(this, dispatcher);
+
+                    // Add exploded items into cart with order item sequence id and item ship group quantity
+                    for (ShoppingCartItem explodedItem : explodedItems) {
+                        String orderItemSeqId = UtilFormatOut.formatPaddedNumber(nextItemSeq, 5);
+                        explodedItem.setOrderItemSeqId(orderItemSeqId);
+                        addItemToEnd(explodedItem);
+                        setItemShipGroupQty(explodedItem, BigDecimal.ONE, thisIndex);
+                        nextItemSeq++;
+                    }
                 } catch (CartItemModifyException e) {
                     Debug.logError(e, "Problem exploding item! Item not exploded.", module);
                 }
@@ -3532,7 +3556,17 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
             for(ShoppingCartItem item : shoppingCartItems) {
                 //Debug.logInfo("Item qty: " + item.getQuantity(), module);
                 try {
-                    item.explodeItem(this, dispatcher);
+                    int thisIndex = items().indexOf(item);
+                    List<ShoppingCartItem> explodedItems = item.explodeItem(this, dispatcher);
+
+                    // Add exploded items into cart with order item sequence id and item ship group quantity
+                    for (ShoppingCartItem explodedItem : explodedItems) {
+                        String orderItemSeqId = UtilFormatOut.formatPaddedNumber(nextItemSeq, 5);
+                        explodedItem.setOrderItemSeqId(orderItemSeqId);
+                        addItemToEnd(explodedItem);
+                        setItemShipGroupQty(explodedItem, BigDecimal.ONE, thisIndex);
+                        nextItemSeq++;
+                    }
                 } catch (CartItemModifyException e) {
                     Debug.logError(e, "Problem exploding (unitizing) item! Item not exploded.", module);
                 }
@@ -3789,18 +3823,6 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
             }
             if (billingAccountAvailableAmount.compareTo(getBillingAccountAmount()) < 0) {
                 this.billingAccountAmt = billingAccountAvailableAmount;
-            }
-            BigDecimal billingAccountAmountSelected = getBillingAccountAmount();
-            GenericValue opp = delegator.makeValue("OrderPaymentPreference", new HashMap<String, Object>());
-            opp.set("paymentMethodTypeId", "EXT_BILLACT");
-            opp.set("presentFlag", "N");
-            opp.set("overflowFlag", "N");
-            opp.set("maxAmount", billingAccountAmountSelected);
-            opp.set("statusId", "PAYMENT_NOT_RECEIVED");
-            allOpPrefs.add(opp);
-            remainingAmount = remainingAmount.subtract(billingAccountAmountSelected);
-            if (remainingAmount.compareTo(BigDecimal.ZERO) < 0) {
-                remainingAmount = BigDecimal.ZERO;
             }
         }
         for(CartPaymentInfo inf : paymentInfo) {
@@ -4857,7 +4879,7 @@ public class ShoppingCart implements Iterable<ShoppingCartItem>, Serializable {
                 }
                 if ("Y".equals(splitPayPrefPerShpGrp)  && cart.paymentInfo.size() == 1) {
                     for(CartShipInfo csi : cart.getShipGroups()) {
-                        maxAmount = csi.getTotal().add(cart.getOrderOtherAdjustmentTotal().divide(new BigDecimal(cart.getShipGroupSize()), generalRounding)).add(csi.getShipEstimate().add(csi.getTotalTax(cart)));
+                        maxAmount = csi.getTotal().add(cart.getOrderOtherAdjustmentTotal().add(cart.getOrderGlobalAdjustments()).divide(new BigDecimal(cart.getShipGroupSize()), generalRounding)).add(csi.getShipEstimate().add(csi.getTotalTax(cart)));
                         maxAmount = maxAmount.setScale(scale, rounding);
 
                         // create the OrderPaymentPreference record

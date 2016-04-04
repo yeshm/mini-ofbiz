@@ -416,7 +416,7 @@ public class LoginServices {
         }
 
         if (errMsg.length() > 0) {
-            result.put(ModelService.RESPONSE_MESSAGE, ModelService.RESPOND_ERROR);
+            result.put(ModelService.RESPONSE_MESSAGE, ModelService.RESPOND_FAIL);
             result.put(ModelService.ERROR_MESSAGE, errMsg);
         }
         return result;
@@ -789,8 +789,9 @@ public class LoginServices {
             return ServiceUtil.returnError(errMsg);
         }
 
+        // Deactivate 'old' UserLogin and do not set disabledDateTime here, otherwise the 'old' UserLogin would be reenabled by next login
         loggedInUserLogin.set("enabled", "N");
-        loggedInUserLogin.set("disabledDateTime", UtilDateTime.nowTimestamp());
+        loggedInUserLogin.set("disabledDateTime", null);
 
         try {
             loggedInUserLogin.store();

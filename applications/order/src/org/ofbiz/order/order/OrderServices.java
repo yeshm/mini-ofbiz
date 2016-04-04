@@ -1963,6 +1963,10 @@ public class OrderServices {
 
                 if (changeToApprove) {
                     newStatus = "ORDER_APPROVED";
+                    if ("ORDER_HOLD".equals(orderHeaderStatusId)) {
+                        // Don't let the system to auto approve order if the order was put on hold.
+                        return ServiceUtil.returnSuccess();
+                    }
                 }
             }
 
@@ -3502,6 +3506,8 @@ public class OrderServices {
         String orderItemTypeId = (String) context.get("orderItemTypeId");
         String changeComments = (String) context.get("changeComments");
         Boolean calcTax = (Boolean) context.get("calcTax");
+        Map<String, String> itemAttributesMap = UtilGenerics.checkMap(context.get("itemAttributesMap"));
+        
         if (calcTax == null) {
             calcTax = Boolean.TRUE;
         }
@@ -3538,11 +3544,28 @@ public class OrderServices {
                     "OrderShoppingCartEmpty", locale));
         }
 
+        try {
+            //For quantity we should test if we allow to add decimal quantity for this product an productStore : 
+            // if not and if quantity is in decimal format then return error.
+            if(! ProductWorker.isDecimalQuantityOrderAllowed(delegator, productId, cart.getProductStoreId())){
+                BigDecimal remainder = quantity.remainder(BigDecimal.ONE);
+                if (remainder.compareTo(BigDecimal.ZERO) != 0) {
+                    return ServiceUtil.returnError(UtilProperties.getMessage(resource_error, "cart.addToCart.quantityInDecimalNotAllowed", locale));
+                }
+                quantity = quantity.setScale(0, UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+            } else {
+                quantity = quantity.setScale(UtilNumber.getBigDecimalScale("order.decimals"), UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+            }
+        } catch(GenericEntityException e) {
+            Debug.logError(e.getMessage(), module);
+            quantity = BigDecimal.ONE;
+        }
+
         // add in the new product
         try {
+            ShoppingCartItem item = null;
             if ("PURCHASE_ORDER".equals(cart.getOrderType())) {
                 GenericValue supplierProduct = cart.getSupplierProduct(productId, quantity, dispatcher);
-                ShoppingCartItem item = null;
                 if (supplierProduct != null) {
                     item = ShoppingCartItem.makePurchaseOrderItem(null, productId, null, quantity, null, null, prodCatalogId, null, orderItemTypeId, null, dispatcher, cart, supplierProduct, itemDesiredDeliveryDate, itemDesiredDeliveryDate, null);
                     cart.addItem(0, item);
@@ -3555,9 +3578,12 @@ public class OrderServices {
                     item.setIsModifiedPrice(true);
                 }
 
+                item.setItemComment(changeComments);
+                item.setDesiredDeliveryDate(itemDesiredDeliveryDate);
+                cart.clearItemShipInfo(item);
                 cart.setItemShipGroupQty(item, item.getQuantity(), shipGroupIdx);
             } else {
-                ShoppingCartItem item = ShoppingCartItem.makeItem(null, productId, null, quantity, null, null, null, null, null, null, null, null, prodCatalogId, null, null, null, dispatcher, cart, null, null, null, Boolean.FALSE, Boolean.FALSE);
+                item = ShoppingCartItem.makeItem(null, productId, null, quantity, null, null, null, null, null, null, null, null, prodCatalogId, null, null, null, dispatcher, cart, null, null, null, Boolean.FALSE, Boolean.FALSE);
                 if (basePrice != null && overridePrice != null) {
                     item.setBasePrice(basePrice);
                     // special hack to make sure we re-calc the promos after a price change
@@ -3571,6 +3597,23 @@ public class OrderServices {
                 item.setDesiredDeliveryDate(itemDesiredDeliveryDate);
                 cart.clearItemShipInfo(item);
                 cart.setItemShipGroupQty(item, item.getQuantity(), shipGroupIdx);
+            }
+            // set the order item attributes
+            if (itemAttributesMap != null) {
+                // go through the item attributes map once to get a list of key names
+                Set<String> attributeNames =FastSet.newInstance();
+                Set<String> keys  = itemAttributesMap.keySet();
+                for (String key : keys) {
+                    attributeNames.add(key);
+                }
+                String attrValue = null;
+                for (String attrName : attributeNames) {
+                    attrValue = itemAttributesMap.get(attrName);
+                    if (UtilValidate.isNotEmpty(attrName)) {
+                        item.setOrderItemAttribute(attrName, attrValue);
+                        Debug.logInfo("Set item attribute Name: " + attrName + " , Value:" + attrValue, module);
+                    }
+                }
             }
         } catch (CartItemModifyException e) {
             Debug.logError(e, module);
@@ -3648,7 +3691,7 @@ public class OrderServices {
                 return ServiceUtil.returnError(e.getMessage());
             }
 
-            if (groupQty.compareTo(BigDecimal.ONE) < 0) {
+            if (groupQty.compareTo(BigDecimal.ZERO) < 0) {
                 return ServiceUtil.returnError(UtilProperties.getMessage(resource,
                         "OrderItemQtyMustBePositive", locale));
             }
@@ -3670,6 +3713,23 @@ public class OrderServices {
             if (cartItem != null) {
                 BigDecimal qty = itemTotals.get(itemSeqId);
                 BigDecimal priceSave = cartItem.getBasePrice();
+
+                try {
+                    //For quantity we should test if we allow to add decimal quantity for this product an productStore : 
+                    // if not and if quantity is in decimal format then return error.
+                    if(! ProductWorker.isDecimalQuantityOrderAllowed(delegator, cartItem.getProductId(), cart.getProductStoreId())){
+                        BigDecimal remainder = qty.remainder(BigDecimal.ONE);
+                        if (remainder.compareTo(BigDecimal.ZERO) != 0) {
+                            return ServiceUtil.returnError(UtilProperties.getMessage(resource_error, "cart.addToCart.quantityInDecimalNotAllowed", locale));
+                        }
+                        qty = qty.setScale(0, UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+                    } else {
+                        qty = qty.setScale(UtilNumber.getBigDecimalScale("order.decimals"), UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+                    }
+                } catch(GenericEntityException e) {
+                    Debug.logError(e.getMessage(), module);
+                    qty = BigDecimal.ONE;
+                }
 
                 // set quantity
                 try {
@@ -3710,6 +3770,15 @@ public class OrderServices {
                     } else {
                         return ServiceUtil.returnError(UtilProperties.getMessage(resource,
                                 "OrderItemDescriptionCannotBeEmpty", locale));
+                    }
+                }
+
+                // Update the item comment
+                if (itemCommentMap != null && itemCommentMap.containsKey(itemSeqId)) {
+                    String comments = itemCommentMap.get(itemSeqId);
+                    if (UtilValidate.isNotEmpty(comments)) {
+                        cartItem.setItemComment(comments);
+                        Debug.logInfo("Set item comment: [" + itemSeqId + "] " + comments, module);
                     }
                 }
 
@@ -3795,6 +3864,22 @@ public class OrderServices {
             // set the group qty
             ShoppingCartItem cartItem = cart.findCartItem(itemInfo[0]);
             if (cartItem != null) {
+                try {
+                    //For quantity we should test if we allow to add decimal quantity for this product an productStore : 
+                    // if not and if quantity is in decimal format then return error.
+                    if(! ProductWorker.isDecimalQuantityOrderAllowed(delegator, cartItem.getProductId(), cart.getProductStoreId())){
+                        BigDecimal remainder = groupQty.remainder(BigDecimal.ONE);
+                        if (remainder.compareTo(BigDecimal.ZERO) != 0) {
+                            return ServiceUtil.returnError(UtilProperties.getMessage(resource_error, "cart.addToCart.quantityInDecimalNotAllowed", locale));
+                        }
+                        groupQty = groupQty.setScale(0, UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+                    } else {
+                        groupQty = groupQty.setScale(UtilNumber.getBigDecimalScale("order.decimals"), UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+                    }
+                } catch(GenericEntityException e) {
+                    Debug.logError(e.getMessage(), module);
+                    groupQty = BigDecimal.ONE;
+                }
             Debug.logInfo("Shipping info (before) for group #" + (groupIdx-1) + " [" + cart.getShipmentMethodTypeId(groupIdx-1) + " / " + cart.getCarrierPartyId(groupIdx-1) + "]", module);
             cart.setItemShipGroupQty(cartItem, groupQty, groupIdx - 1);
             Debug.logInfo("Set ship group qty: [" + itemInfo[0] + " / " + itemInfo[1] + " (" + (groupIdx-1) + ")] " + groupQty, module);
@@ -4042,9 +4127,13 @@ public class OrderServices {
     private static void saveUpdatedCartToOrder(LocalDispatcher dispatcher, Delegator delegator, ShoppingCart cart,
             Locale locale, GenericValue userLogin, String orderId, Map<String, Object> changeMap, boolean calcTax,
             boolean deleteItems) throws GeneralException {
-        // get/set the shipping estimates.  if it's a SALES ORDER, then return an error if there are no ship estimates
-        int shipGroups = cart.getShipGroupSize();
-        for (int gi = 0; gi < shipGroups; gi++) {
+        // get/set the shipping estimates. If it's a SALES ORDER, then return an error if there are no ship estimates
+        int shipGroupsSize = cart.getShipGroupSize();
+        int realShipGroupsSize = (new OrderReadHelper(delegator, orderId)).getOrderItemShipGroups().size();
+        // If an empty csi has initially been added to cart.shipInfo by ShoppingCart.setItemShipGroupQty() (called indirectly by ShoppingCart.setUserLogin() and then ProductPromoWorker.doPromotions(), etc.)
+        //  shipGroupsSize > realShipGroupsSize are different (+1 for shipGroupsSize), then simply bypass the 1st empty csi!
+        int origin = realShipGroupsSize == shipGroupsSize ? 0 : 1; 
+        for (int gi = origin; gi < shipGroupsSize; gi++) {
             String shipmentMethodTypeId = cart.getShipmentMethodTypeId(gi);
             String carrierPartyId = cart.getCarrierPartyId(gi);
             Debug.logInfo("Getting ship estimate for group #" + gi + " [" + shipmentMethodTypeId + " / " + carrierPartyId + "]", module);
@@ -4246,11 +4335,17 @@ public class OrderServices {
                     String oldItemDescription = oldOrderItem.getString("itemDescription") != null ? oldOrderItem.getString("itemDescription") : "";
                     BigDecimal oldQuantity = oldOrderItem.getBigDecimal("quantity") != null ? oldOrderItem.getBigDecimal("quantity") : BigDecimal.ZERO;
                     BigDecimal oldUnitPrice = oldOrderItem.getBigDecimal("unitPrice") != null ? oldOrderItem.getBigDecimal("unitPrice") : BigDecimal.ZERO;
+                    String oldItemComment = oldOrderItem.getString("comments") != null ? oldOrderItem.getString("comments") : "";
 
                     boolean changeFound = false;
                     Map<String, Object> modifiedItem = FastMap.newInstance();
                     if (!oldItemDescription.equals(valueObj.getString("itemDescription"))) {
                         modifiedItem.put("itemDescription", oldItemDescription);
+                        changeFound = true;
+                    }
+
+                    if (!oldItemComment.equals(valueObj.getString("comments"))) {
+                        modifiedItem.put("changeComments", valueObj.getString("comments"));
                         changeFound = true;
                     }
 
@@ -4268,14 +4363,9 @@ public class OrderServices {
 
                         //  found changes to store
                         Map<String, String> itemReasonMap = UtilGenerics.checkMap(changeMap.get("itemReasonMap"));
-                        Map<String, String> itemCommentMap = UtilGenerics.checkMap(changeMap.get("itemCommentMap"));
                         if (UtilValidate.isNotEmpty(itemReasonMap)) {
                             String changeReasonId = itemReasonMap.get(valueObj.getString("orderItemSeqId"));
                             modifiedItem.put("reasonEnumId", changeReasonId);
-                        }
-                        if (UtilValidate.isNotEmpty(itemCommentMap)) {
-                            String changeComments = itemCommentMap.get(valueObj.getString("orderItemSeqId"));
-                            modifiedItem.put("changeComments", changeComments);
                         }
 
                         modifiedItem.put("orderId", valueObj.getString("orderId"));
@@ -4362,7 +4452,7 @@ public class OrderServices {
                 itemStatus.put("orderId", newItem.get("orderId"));
                 itemStatus.put("orderItemSeqId", newItem.get("orderItemSeqId"));
                 itemStatus.put("statusDatetime", UtilDateTime.nowTimestamp());
-                itemStatus.set("statusUserLogin", userLogin.get("userLogin"));
+                itemStatus.set("statusUserLogin", userLogin.get("userLoginId"));
                 delegator.create(itemStatus);
             }
         }
@@ -4873,8 +4963,15 @@ public class OrderServices {
                     if (!UtilValidate.isEmpty(shipGroup.getString("supplierPartyId"))) {
                         // This ship group is a drop shipment: we create a purchase order for it
                         String supplierPartyId = shipGroup.getString("supplierPartyId");
+                        // Set supplier preferred currency for drop-ship (PO) order to support multi currency
+                        GenericValue supplierParty = delegator.findOne("Party", UtilMisc.toMap("partyId", supplierPartyId), false);
+                        String currencyUomId = supplierParty.getString("preferredCurrencyUomId");
+                        // If supplier currency not found then set currency of sales order
+                        if (UtilValidate.isEmpty(currencyUomId)) {
+                            currencyUomId = orh.getCurrency();
+                        }
                         // create the cart
-                        ShoppingCart cart = new ShoppingCart(delegator, orh.getProductStoreId(), null, orh.getCurrency());
+                        ShoppingCart cart = new ShoppingCart(delegator, orh.getProductStoreId(), null, currencyUomId);
                         cart.setOrderType("PURCHASE_ORDER");
                         cart.setBillToCustomerPartyId(cart.getBillFromVendorPartyId()); //Company
                         cart.setBillFromVendorPartyId(supplierPartyId);
@@ -5772,5 +5869,111 @@ public class OrderServices {
         }
 
         return ServiceUtil.returnSuccess();
+    }
+
+    /**
+     * This service runs when you update shipping method of Order from order view page.
+     */
+    public static Map<String, Object> updateShipGroupShipInfo(DispatchContext dctx, Map<String, ? extends Object> context) {
+        LocalDispatcher dispatcher = dctx.getDispatcher();
+        Delegator delegator = dctx.getDelegator();
+        Locale locale = (Locale) context.get("locale");
+        GenericValue userLogin  = (GenericValue)context.get("userLogin");
+        String orderId = (String)context.get("orderId");
+        String shipGroupSeqId = (String)context.get("shipGroupSeqId");
+        String contactMechId = (String)context.get("contactMechId");
+        String oldContactMechId = (String)context.get("oldContactMechId");
+        String shipmentMethod = (String)context.get("shipmentMethod");
+
+        //load cart from order to update new shipping method or address
+        ShoppingCart shoppingCart = null;
+        try {
+            shoppingCart = loadCartForUpdate(dispatcher, delegator, userLogin, orderId);
+        } catch(GeneralException e) {
+            Debug.logError(e, module);
+        }
+
+        String message = null;
+        if (UtilValidate.isNotEmpty(shipGroupSeqId)) {
+            OrderReadHelper orh = new OrderReadHelper(delegator, orderId);
+            List<GenericValue> shippingMethods = null;
+            String shipmentMethodTypeId = null;
+            String carrierPartyId = null;
+
+            // get shipment method from OrderItemShipGroup, if not available in parameters
+            if (UtilValidate.isNotEmpty(shipmentMethod)) {
+                String[] arr = shipmentMethod.split( "@" );
+                shipmentMethodTypeId = arr[0];
+                carrierPartyId = arr[1];
+            } else {
+                GenericValue orderItemshipGroup = orh.getOrderItemShipGroup(shipGroupSeqId);
+                shipmentMethodTypeId = orderItemshipGroup.getString("shipmentMethodTypeId");
+                carrierPartyId = orderItemshipGroup.getString("carrierPartyId");
+            }
+            int groupIdx =Integer.parseInt(shipGroupSeqId);
+
+            /* check whether new selected contact address is same as old contact.
+               If contact address is different, get applicable ship methods for changed contact */
+            if (UtilValidate.isNotEmpty(oldContactMechId) && oldContactMechId.equals(contactMechId)) {
+                shoppingCart.setShipmentMethodTypeId(groupIdx - 1, shipmentMethodTypeId);
+                shoppingCart.setCarrierPartyId(groupIdx - 1, carrierPartyId);
+            } else {
+                Map<String, BigDecimal> shippableItemFeatures = orh.getFeatureIdQtyMap(shipGroupSeqId);
+                BigDecimal shippableTotal = orh.getShippableTotal(shipGroupSeqId);
+                BigDecimal shippableWeight = orh.getShippableWeight(shipGroupSeqId);
+                List<BigDecimal> shippableItemSizes = orh.getShippableSizes(shipGroupSeqId);
+
+                GenericValue shippingAddress = null;
+                if(UtilValidate.isEmpty(shippingAddress)) {
+                    shippingAddress = orh.getShippingAddress(shipGroupSeqId);
+                }
+
+                shippingMethods = ProductStoreWorker.getAvailableStoreShippingMethods(delegator, orh.getProductStoreId(),
+                        shippingAddress, shippableItemSizes, shippableItemFeatures, shippableWeight, shippableTotal);
+
+                boolean isShippingMethodAvailable = false;
+                // search shipping method for ship group is applicable to new address or not.
+                for (GenericValue shippingMethod : shippingMethods) {
+                    isShippingMethodAvailable = shippingMethod.getString("partyId").equals(carrierPartyId) && shippingMethod.getString("shipmentMethodTypeId").equals(shipmentMethodTypeId);
+                    if (isShippingMethodAvailable) {
+                        shoppingCart.setShipmentMethodTypeId(groupIdx - 1, shipmentMethodTypeId);
+                        shoppingCart.setCarrierPartyId(groupIdx - 1, carrierPartyId);
+                        break;
+                    }
+                }
+
+                // set first shipping method from list, if shipping method for ship group is not applicable to new ship address.
+                if(!isShippingMethodAvailable) {
+                    shoppingCart.setShipmentMethodTypeId(groupIdx - 1, shippingMethods.get(0).getString("shipmentMethodTypeId"));
+                    shoppingCart.setCarrierPartyId(groupIdx - 1, shippingMethods.get(0).getString("carrierPartyId"));
+
+                    String newShipMethTypeDesc =null;
+                    String shipMethTypeDesc=null;
+                    try {
+                        shipMethTypeDesc = delegator.findOne("ShipmentMethodType", UtilMisc.toMap("shipmentMethodTypeId", shipmentMethodTypeId), false).getString("description");
+                        newShipMethTypeDesc = delegator.findOne("ShipmentMethodType", UtilMisc.toMap("shipmentMethodTypeId", shippingMethods.get(0).getString("shipmentMethodTypeId")), false).getString("description");
+                    } catch(GenericEntityException e) {
+                        Debug.logError(e, module);
+                    }
+                    // message to notify user for not applicability of shipping method
+                    message= "Shipping Method "+carrierPartyId+" "+shipMethTypeDesc+" is not applicable to shipping address. "+shippingMethods.get(0).getString("carrierPartyId")+" "+newShipMethTypeDesc+" has been set for shipping address.";
+                }
+                shoppingCart.setShippingContactMechId(groupIdx-1, contactMechId);
+            }
+        }
+
+        // save cart after updating shipping method and shipping address.
+        Map<String, Object> changeMap = new HashMap<String, Object>();
+        try {
+            saveUpdatedCartToOrder(dispatcher, delegator, shoppingCart, locale, userLogin, orderId, changeMap, true, false);
+        } catch(GeneralException e) {
+            Debug.logError(e, module);
+        }
+
+        if (UtilValidate.isNotEmpty(message)) {
+            return ServiceUtil.returnSuccess(message);
+        } else {
+            return ServiceUtil.returnSuccess();
+        }
     }
 }

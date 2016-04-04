@@ -50,11 +50,6 @@ under the License.
             <#assign totalQuoteAmount = 0.0>
             <#assign alt_row = false/>
             <#list quoteItems as quoteItem>
-                <#if quoteItem.productId?exists>
-                    <#assign product = quoteItem.getRelatedOne("Product", false)>
-                <#else>
-                    <#assign product = null> <#-- don't drag it along to the next iteration -->
-                </#if>
                 <#assign selectedAmount = quoteItem.selectedAmount?default(1)>
                 <#if selectedAmount == 0>
                     <#assign selectedAmount = 1/>
@@ -81,7 +76,10 @@ under the License.
                     </td>
                     <td valign="top">
                         <div>
+                          <#if quoteItem.productId?exists>
+                            <#assign product = quoteItem.getRelatedOne("Product", false)>
                             ${(product.internalName)?if_exists}&nbsp;
+                            </#if>
                             <#if showQuoteManagementLinks?exists>
                                 <a href="/catalog/control/EditProduct?productId=${quoteItem.productId?if_exists}" class="buttontext">
                                   <#if quoteItem.productId?exists>
@@ -95,9 +93,9 @@ under the License.
                             </#if>
                         </div>
                     </td>
-                    <td></td>
                     <td align="right" valign="top">${quoteItem.quantity?if_exists}</td>
                     <td align="right" valign="top">${quoteItem.selectedAmount?if_exists}</td>
+                    <td></td>
                     <td align="right" valign="top"><@ofbizCurrency amount=quoteItem.quoteUnitPrice isoCode=quote.currencyUomId/></td>
                     <td align="right" valign="top"><@ofbizCurrency amount=totalQuoteItemAdjustmentAmount isoCode=quote.currencyUomId/></td>
                     <td align="right" valign="top"><@ofbizCurrency amount=totalQuoteItemAmount isoCode=quote.currencyUomId/></td>

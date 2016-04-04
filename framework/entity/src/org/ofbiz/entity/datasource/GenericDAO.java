@@ -52,7 +52,8 @@ import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityConditionParam;
 import org.ofbiz.entity.condition.EntityOperator;
-import org.ofbiz.entity.config.model.*;
+import org.ofbiz.entity.config.model.Datasource;
+import org.ofbiz.entity.config.model.EntityConfig;
 import org.ofbiz.entity.config.EntityConfigUtil;
 import org.ofbiz.entity.jdbc.DatabaseUtil;
 import org.ofbiz.entity.jdbc.SQLProcessor;
@@ -574,9 +575,9 @@ public class GenericDAO {
 
         Set<String> tempKeys = new TreeSet<String>(keys);
 
-        Iterator<ModelField> nopkIter = modelEntity.getNopksIterator();
-        while (nopkIter.hasNext()) {
-            ModelField curField = nopkIter.next();
+        Iterator<ModelField> entityFieldIter = modelEntity.getFieldsIterator();
+        while (entityFieldIter.hasNext()) {
+            ModelField curField = entityFieldIter.next();
             if (tempKeys.contains(curField.getName())) {
                 partialFields.add(curField);
                 tempKeys.remove(curField.getName());

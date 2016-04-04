@@ -1749,6 +1749,11 @@ public class ShoppingCartItem implements java.io.Serializable {
         this.supplierProductId = supplierProductId;
     }
 
+    /** Set the item's locale (from ShoppingCart.setLocale) */
+    protected void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
     /** Set the item's description. */
     public void setName(String itemName) {
         this.itemDescription = itemName;
@@ -2018,6 +2023,10 @@ public class ShoppingCartItem implements java.io.Serializable {
     /** Returns the list price. */
     public BigDecimal getListPrice() {
         return listPrice;
+    }
+
+    public void setListPrice(BigDecimal listPrice) {
+    	this.listPrice = listPrice;
     }
 
     /** Returns isModifiedPrice */
@@ -2516,7 +2525,7 @@ public class ShoppingCartItem implements java.io.Serializable {
         return delegator;
     }
 
-    public void explodeItem(ShoppingCart cart, LocalDispatcher dispatcher) throws CartItemModifyException {
+    public List<ShoppingCartItem> explodeItem(ShoppingCart cart, LocalDispatcher dispatcher) throws CartItemModifyException {
         BigDecimal baseQuantity = this.getQuantity();
         int thisIndex = cart.items().indexOf(this);
         List<ShoppingCartItem> newItems = new ArrayList<ShoppingCartItem>();
@@ -2528,7 +2537,6 @@ public class ShoppingCartItem implements java.io.Serializable {
 
                 // set the new item's quantity
                 item.setQuantity(BigDecimal.ONE, dispatcher, cart, false);
-
                 // now copy/calc the adjustments
                 Debug.logInfo("Clone's adj: " + item.getAdjustments(), module);
                 if (UtilValidate.isNotEmpty(item.getAdjustments())) {
@@ -2578,11 +2586,8 @@ public class ShoppingCartItem implements java.io.Serializable {
                 }
             }
 
-            // add the cloned item(s) to the cart
-            for(ShoppingCartItem sci : newItems) {
-                cart.addItem(thisIndex, sci);
-            }
         }
+        return newItems;
     }
 
     public static String getPurchaseOrderItemDescription(GenericValue product, GenericValue supplierProduct, Locale locale) {

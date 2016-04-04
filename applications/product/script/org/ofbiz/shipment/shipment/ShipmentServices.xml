@@ -212,7 +212,6 @@ under the License.
                 </or>
             </condition>
             <then>
-                <find-by-primary-key entity-name="WorkEffort" map="estimatedArrivalWorkEffortMap" value-field="estimatedArrivalWorkEffort"/>
                 <entity-one entity-name="WorkEffort" value-field="estimatedArrivalWorkEffort" auto-field-map="false">
                     <field-map field-name="workEffortId" from-field="lookedUpValue.estimatedArrivalWorkEffId"/>
                 </entity-one>
@@ -1339,6 +1338,13 @@ under the License.
     </simple-method>
 
     <simple-method method-name="quickDropShipOrder" short-description="Create and complete a drop shipment for a ship group">
+        <entity-one entity-name="OrderHeader" value-field="orderHeader"/>
+        <if-compare field="orderHeader.statusId" operator="equals" value="ORDER_CREATED">
+            <add-error>
+                <fail-property resource="OrderErrorUiLabels" property="OrderApproveOrderBeforeQuickDropShip"/>
+            </add-error>
+            <check-errors/>
+        </if-compare>
         <set from-field="parameters.orderId" field="shipmentContext.primaryOrderId"/>
         <set from-field="parameters.shipGroupSeqId" field="shipmentContext.primaryShipGroupSeqId"/>
         <set value="PURCH_SHIP_CREATED" field="shipmentContext.statusId"/>

@@ -26,6 +26,24 @@ under the License.
                 <set field="titleProperty" value="OrderFindRequests"/>
                 <set field="headerItem" value="request"/>
                 <set field="entityName" value="CustRequest"/>
+                <set field="asm_multipleSelectForm" value="FindRequests"/>
+                <set field="asm_asmListItemPercentOfForm" value="110"/>
+                <set field="custRequestType.asm_multipleSelect"  value="FindRequests_custRequestTypeId"/>
+                <set field="custRequestType.asm_sortable" value="true"/>
+                <set field="custRequestType.asm_title" value=" "/>
+                <set field="statusId.asm_multipleSelect"  value="FindRequests_statusId"/>
+                <set field="statusId.asm_sortable" value="true"/>
+                <set field="statusId.asm_title" value=" "/>
+                <set field="productStoreId.asm_multipleSelect"  value="FindRequests_productStoreId"/>
+                <set field="productStoreId.asm_sortable" value="true"/>
+                <set field="productStoreId.asm_title" value=" "/>
+                <set field="salesChannelEnumId.asm_multipleSelect"  value="FindRequests_salesChannelEnumId"/>
+                <set field="salesChannelEnumId.asm_sortable" value="true"/>
+                <set field="salesChannelEnumId.asm_title" value=" "/>
+                <set field="asm_listField[]" from-field="custRequestType"/>
+                <set field="asm_listField[]" from-field="statusId"/>
+                <set field="asm_listField[]" from-field="productStoreId"/>
+                <set field="asm_listField[]" from-field="salesChannelEnumId"/>
             </actions>
             <widgets>
                 <decorator-screen name="main-decorator" location="${parameters.mainDecoratorLocation}">
@@ -37,6 +55,7 @@ under the License.
                                 </container>
                             </decorator-section>
                             <decorator-section name="search-options">
+                                <platform-specific><html><html-template location="component://common/webcommon/includes/setMultipleSelectJsList.ftl"/></html></platform-specific>
                                 <include-form name="FindRequests" location="component://order/widget/ordermgr/CustRequestForms.xml"/>
                             </decorator-section>
                             <decorator-section name="search-results">
@@ -513,7 +532,7 @@ under the License.
     <screen name="IncomingCustRequests">
         <section>
             <actions>
-                <set field="parameters.sortField" from-field="parameters.sortField" default-value="-custRequestDate"/>
+                <set field="custRequestSortField" from-field="parameters.custRequestSortField" default-value="-custRequestDate"/>
                 <property-map resource="OrderUiLabels" map-name="uiLabelMap" global="true"/>
                 <entity-condition list="custRequests" entity-name="CustReqAndTypeAndPartyRel">
                     <condition-list combine="and">
@@ -523,7 +542,7 @@ under the License.
                             <condition-expr field-name="partyIdTo" operator="equals" from-field="userLogin.partyId"/>
                         </condition-list>
                     </condition-list>
-                    <order-by field-name="${parameters.sortField}"/>
+                    <order-by field-name="${custRequestSortField}"/>
                 </entity-condition>
             </actions>
             <widgets>

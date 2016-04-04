@@ -35,6 +35,7 @@ import javolution.util.FastMap;
 import net.sf.json.JSONObject;
 
 import org.ofbiz.base.util.Debug;
+import org.ofbiz.base.util.GeneralException;
 import org.ofbiz.base.util.UtilDateTime;
 import org.ofbiz.base.util.UtilGenerics;
 import org.ofbiz.base.util.UtilMisc;
@@ -50,7 +51,9 @@ import org.ofbiz.entity.util.EntityFindOptions;
 import org.ofbiz.entity.util.EntityListIterator;
 import org.ofbiz.entity.util.EntityUtil;
 import org.ofbiz.product.catalog.CatalogWorker;
+import org.ofbiz.product.product.ProductWorker;
 import org.ofbiz.service.DispatchContext;
+import org.ofbiz.service.LocalDispatcher;
 import org.ofbiz.service.ServiceUtil;
 
 /**
@@ -212,6 +215,7 @@ public class CategoryServices {
 
     public static Map<String, Object> getProductCategoryAndLimitedMembers(DispatchContext dctx, Map<String, ? extends Object> context) {
         Delegator delegator = dctx.getDelegator();
+        LocalDispatcher dispatcher = dctx.getDispatcher();
         String productCategoryId = (String) context.get("productCategoryId");
         boolean limitView = ((Boolean) context.get("limitView")).booleanValue();
         int defaultViewSize = ((Integer) context.get("defaultViewSize")).intValue();
@@ -237,7 +241,7 @@ public class CategoryServices {
         }
 
         Timestamp nowTimestamp = UtilDateTime.nowTimestamp();
-
+        
         int viewIndex = 0;
         try {
             viewIndex = Integer.valueOf((String) context.get("viewIndexString")).intValue();
@@ -272,7 +276,18 @@ public class CategoryServices {
             lowIndex = 0;
             highIndex = 0;
         }
-
+        Boolean filterOutOfStock = false ;
+        try {
+            String productStoreId = (String) context.get("productStoreId");
+            if (UtilValidate.isNotEmpty(productStoreId)) {
+                GenericValue productStore = delegator.findOne("ProductStore", UtilMisc.toMap("productStoreId", productStoreId), false);
+                if (productStore != null && "N".equals(productStore.getString("showOutOfStockProducts"))) {
+                    filterOutOfStock = true;
+                }
+            }
+        } catch (GenericEntityException e) {
+            Debug.logWarning(e.getMessage(), module);
+        }
         List<GenericValue> productCategoryMembers = null;
         if (productCategory != null) {
             try {
@@ -293,7 +308,16 @@ public class CategoryServices {
                     if (!filterConditions.isEmpty()) {
                         productCategoryMembers = EntityUtil.filterByCondition(productCategoryMembers, EntityCondition.makeCondition(filterConditions, EntityOperator.AND));
                     }
-
+                    
+                    // filter out of stock products
+                    if (filterOutOfStock) {
+                        try {
+                            productCategoryMembers = ProductWorker.filterOutOfStockProducts(productCategoryMembers, dispatcher, delegator);
+                        } catch (GeneralException e) {
+                            Debug.logWarning("Problem filtering out of stock products :"+e.getMessage(), module);
+                        }
+                        
+                    }
                     // filter out the view allow before getting the sublist
                     if (UtilValidate.isNotEmpty(viewProductCategoryId)) {
                         productCategoryMembers = CategoryWorker.filterProductsInCategory(delegator, productCategoryMembers, viewProductCategoryId);
@@ -371,7 +395,15 @@ public class CategoryServices {
                         lowIndex = 1;
                         highIndex = listSize;
                     }
-
+                    // filter out of stock products
+                    if (filterOutOfStock) {
+                        try {
+                            productCategoryMembers = ProductWorker.filterOutOfStockProducts(productCategoryMembers, dispatcher, delegator);
+                            listSize = productCategoryMembers.size();
+                        } catch (GeneralException e) {
+                            Debug.logWarning("Problem filtering out of stock products :"+e.getMessage(), module);
+                        }
+                    }
                     // null safety
                     if (productCategoryMembers == null) {
                         productCategoryMembers = FastList.newInstance();
@@ -399,7 +431,7 @@ public class CategoryServices {
         if (productCategoryMembers != null) result.put("productCategoryMembers", productCategoryMembers);
         return result;
     }
-    
+
     // Please note : the structure of map in this function is according to the JSON data map of the jsTree
     @SuppressWarnings("unchecked")
     public static void getChildCategoryTree(HttpServletRequest request, HttpServletResponse response){

@@ -64,6 +64,9 @@ public class ContentUrlFilter extends ContextFilter {
         
         //Get ServletContext
         ServletContext servletContext = config.getServletContext();
+
+        ContextFilter.setCharacterEncoding(request);
+
         //Set request attribute and session
         UrlServletHelper.setRequestAttributes(request, delegator, servletContext);
         String urlContentId = null;
@@ -91,7 +94,7 @@ public class ContentUrlFilter extends ContextFilter {
                 StringBuilder urlBuilder = new StringBuilder();
                 urlBuilder.append("/" + CONTROL_MOUNT_POINT);
                 urlBuilder.append("/" + config.getInitParameter("viewRequest") + "?contentId=" + urlContentId);
-                
+
                 //Set view query parameters
                 UrlServletHelper.setViewQueryParameters(request, urlBuilder);
                 Debug.logInfo("[Filtered request]: " + pathInfo + " (" + urlBuilder + ")", module);
@@ -152,7 +155,7 @@ public class ContentUrlFilter extends ContextFilter {
         }
         StringBuilder urlBuilder = new StringBuilder();
         urlBuilder.append(request.getSession().getServletContext().getContextPath());
-        if (urlBuilder.charAt(urlBuilder.length() - 1) != '/') {
+        if (urlBuilder.length() == 0 || urlBuilder.charAt(urlBuilder.length() - 1) != '/') {
             urlBuilder.append("/");
         }
         urlBuilder.append(CONTROL_MOUNT_POINT);

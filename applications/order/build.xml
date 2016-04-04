@@ -45,6 +45,7 @@ under the License.
         <fileset dir="../../framework/webapp/lib" includes="*.jar"/>
         <fileset dir="../../framework/webapp/build/lib" includes="*.jar"/>
         <fileset dir="../../framework/common/build/lib" includes="*.jar"/>
+        <fileset dir="../../framework/widget/build/lib" includes="*.jar"/>
         <fileset dir="../content/build/lib" includes="*.jar"/>
         <fileset dir="../party/build/lib" includes="*.jar"/>
         <fileset dir="../product/build/lib" includes="*.jar"/>
@@ -56,10 +57,10 @@ under the License.
     <!-- ================================================================== -->
 
     <target name="classes" depends="prepare">
-        <javac16>
+        <javac17>
             <!-- exclude the payment processor packages; comment if you have libs -->
             <exclude name="org/ofbiz/order/thirdparty/taxware/**"/>
-        </javac16>
+        </javac17>
     </target>
 
     <target name="jar" depends="classes">

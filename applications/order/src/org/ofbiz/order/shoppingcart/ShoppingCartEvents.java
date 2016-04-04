@@ -54,7 +54,6 @@ import org.ofbiz.entity.GenericValue;
 import org.ofbiz.entity.condition.EntityCondition;
 import org.ofbiz.entity.condition.EntityOperator;
 import org.ofbiz.entity.util.EntityUtil;
-import org.ofbiz.order.shoppingcart.ShoppingCart.ProductPromoUseInfo;
 import org.ofbiz.order.shoppingcart.product.ProductPromoWorker;
 import org.ofbiz.product.catalog.CatalogWorker;
 import org.ofbiz.product.config.ProductConfigWorker;
@@ -464,8 +463,14 @@ public class ShoppingCartEvents {
         // parse the quantity
         try {
             quantity = (BigDecimal) ObjectType.simpleTypeConvert(quantityStr, "BigDecimal", null, locale);
-            //For quantity we should test if we allow to add decimal quantity for this product an productStore : if not then round to 0
+            //For quantity we should test if we allow to add decimal quantity for this product an productStore : 
+            // if not and if quantity is in decimal format then return error.
             if(! ProductWorker.isDecimalQuantityOrderAllowed(delegator, productId, cart.getProductStoreId())){
+                BigDecimal remainder = quantity.remainder(BigDecimal.ONE);
+                if (remainder.compareTo(BigDecimal.ZERO) != 0) {
+                    request.setAttribute("_ERROR_MESSAGE_", UtilProperties.getMessage(resource_error, "cart.addToCart.quantityInDecimalNotAllowed", locale));
+                    return "error";
+                }
                 quantity = quantity.setScale(0, UtilNumber.getBigDecimalRoundingMode("order.rounding"));
             }
             else {
@@ -645,7 +650,20 @@ public class ShoppingCartEvents {
         if (UtilValidate.isNotEmpty(itemId)) {
             request.setAttribute("itemId", itemId);
         }
-
+        try {
+            GenericValue product = delegator.findOne("Product", UtilMisc.toMap("productId", productId), false); 
+            //Reset shipment method information in cart only if shipping applies on product.
+            if (ProductWorker.shippingApplies(product)) {
+                for (int shipGroupIndex = 0; shipGroupIndex < cart.getShipGroupSize(); shipGroupIndex++) {
+                    String shipContactMechId = cart.getShippingContactMechId(shipGroupIndex);
+                    if (UtilValidate.isNotEmpty(shipContactMechId)) {
+                        cart.setShipmentMethodTypeId(shipGroupIndex, null);
+                    }
+                }
+            }
+        } catch (GenericEntityException e) {
+            Debug.logError(e, "Error getting product"+e.getMessage(), module);
+        }
         // Determine where to send the browser
         if (controlDirective.equals(ERROR)) {
             return "error";
@@ -904,13 +922,13 @@ public class ShoppingCartEvents {
         HttpSession session = request.getSession();
         GenericValue userLogin = (GenericValue) session.getAttribute("userLogin");
         if (userLogin != null && "anonymous".equals(userLogin.get("userLoginId"))) {
-        	Locale locale = UtilHttp.getLocale(session);
-        	
+            Locale locale = UtilHttp.getLocale(session);
+            
             // here we want to do a full logout, but not using the normal logout stuff because it saves things in the UserLogin record that we don't want changed for the anonymous user
             session.invalidate();
             session = request.getSession(true);
             if (null != locale) {
-            	UtilHttp.setLocale(session, locale);
+                UtilHttp.setLocale(session, locale);
             }
 
             // to allow the display of the order confirmation page put the userLogin in the request, but leave it out of the session
@@ -1805,6 +1823,25 @@ public class ShoppingCartEvents {
                 } catch (Exception e) {
                     Debug.logWarning(e, "Problems parsing quantity string: " + quantityStr, module);
                     quantity = BigDecimal.ZERO;
+                }
+
+                try {
+                    //For quantity we should test if we allow to add decimal quantity for this product an productStore : 
+                    // if not and if quantity is in decimal format then return error.
+                    if(! ProductWorker.isDecimalQuantityOrderAllowed(delegator, productId, cart.getProductStoreId())){
+                        BigDecimal remainder = quantity.remainder(BigDecimal.ONE);
+                        if (remainder.compareTo(BigDecimal.ZERO) != 0) {
+                            request.setAttribute("_ERROR_MESSAGE_", UtilProperties.getMessage(resource_error, "cart.addToCart.quantityInDecimalNotAllowed", cart.getLocale()));
+                            return "error";
+                        }
+                        quantity = quantity.setScale(0, UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+                    }
+                    else {
+                        quantity = quantity.setScale(UtilNumber.getBigDecimalScale("order.decimals"), UtilNumber.getBigDecimalRoundingMode("order.rounding"));
+                    }
+                } catch (GenericEntityException e) {
+                    Debug.logWarning(e.getMessage(), module);
+                    quantity = BigDecimal.ONE;
                 }
 
                 // get the selected amount
