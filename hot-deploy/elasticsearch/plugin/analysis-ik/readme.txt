@@ -1,1 +1,0 @@
-elasticsearch-analysis-ik-1.2.7.jar原本放这里，但是运行环境加载不到，所以搬到../../lib下了。
