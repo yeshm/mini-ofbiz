@@ -2,7 +2,7 @@
 <classpath>
     <classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
     <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-    <classpathentry kind="lib" path="applications/content/lib/fontbox-1.7.1.jar"/>
+    <!--<classpathentry kind="lib" path="applications/content/lib/fontbox-1.7.1.jar"/>
     <classpathentry kind="lib" path="applications/content/lib/jempbox-1.7.1.jar"/>
     <classpathentry kind="lib" path="applications/content/lib/pdfbox-1.7.1.jar"/>
     <classpathentry kind="lib" path="applications/content/lib/dom4j-1.6.1.jar"/>
@@ -10,7 +10,7 @@
     <classpathentry kind="lib" path="applications/content/lib/tika-core-1.0.jar"/>
     <classpathentry kind="lib" path="applications/content/lib/tika-parsers-1.0.jar"/>
     <classpathentry kind="lib" path="applications/product/lib/watermarker-0.0.4.jar"/>
-    <classpathentry kind="lib" path="applications/product/lib/dozer-4.2.1.jar"/>
+    <classpathentry kind="lib" path="applications/product/lib/dozer-4.2.1.jar"/>-->
     <classpathentry kind="lib" path="framework/base/lib/ant-1.9.0-ant.jar"/>
     <classpathentry kind="lib" path="framework/base/lib/ant-1.9.0-ant-junit.jar"/>
     <classpathentry kind="lib" path="framework/base/lib/ant-1.9.0-ant-launcher.jar"/>
@@ -158,7 +158,7 @@
     <classpathentry kind="lib" path="specialpurpose/ebaystore/lib/ebaycalls.jar"/>
     <classpathentry kind="lib" path="specialpurpose/ebaystore/lib/ebaysdkcore.jar"/>
     <classpathentry kind="lib" path="specialpurpose/ebaystore/lib/helper.jar"/-->
-    <classpathentry excluding="org/ofbiz/accounting/thirdparty/cybersource/**|org/ofbiz/accounting/thirdparty/verisign/**|org/ofbiz/accounting/thirdparty/worldpay/**|org/ofbiz/accounting/thirdparty/paypal/PayPalServices.java|org/ofbiz/accounting/thirdparty/orbital/**|org/ofbiz/accounting/thirdparty/securepay/**|org/ofbiz/accounting/thirdparty/ideal/**" kind="src" path="applications/accounting/src"/>
+    <!--<classpathentry excluding="org/ofbiz/accounting/thirdparty/cybersource/**|org/ofbiz/accounting/thirdparty/verisign/**|org/ofbiz/accounting/thirdparty/worldpay/**|org/ofbiz/accounting/thirdparty/paypal/PayPalServices.java|org/ofbiz/accounting/thirdparty/orbital/**|org/ofbiz/accounting/thirdparty/securepay/**|org/ofbiz/accounting/thirdparty/ideal/**" kind="src" path="applications/accounting/src"/>
     <classpathentry excluding="org/ofbiz/content/openoffice/|org/ofbiz/content/report/" kind="src" path="applications/content/src"/>
     <classpathentry kind="src" path="applications/manufacturing/src"/>
     <classpathentry kind="src" path="applications/marketing/src"/>
@@ -167,11 +167,11 @@
     <classpathentry excluding="ShipmentScaleApplet.java" kind="src" path="applications/product/src"/>
     <classpathentry excluding="org/ofbiz/securityext/thirdparty/truition/TruitionCoReg.java" kind="src" path="applications/securityext/src"/>
     <classpathentry kind="src" path="applications/humanres/src"/>
-    <classpathentry kind="src" path="applications/workeffort/src"/>
+    <classpathentry kind="src" path="applications/workeffort/src"/>-->
     <!-- classpathentry kind="src" path="specialpurpose/appserver/src"/-->
     <classpathentry kind="src" path="framework/base/build/gen-src/javacc"/>
     <classpathentry excluding="org/ofbiz/base/config/CoberturaInstrumenter.java" kind="src" path="framework/base/src"/>
-    <classpathentry kind="src" path="framework/bi/src"/>
+    <!--<classpathentry kind="src" path="framework/bi/src"/>-->
     <!-- classpathentry kind="src" path="specialpurpose/birt/src"/-->
     <classpathentry kind="src" path="framework/catalina/src"/>
     <classpathentry kind="src" path="framework/common/src"/>
@@ -193,7 +193,7 @@
     <!-- classpathentry kind="src" path="specialpurpose/assetmaint/src"/>
     <classpathentry kind="src" path="specialpurpose/ebay/src"/>
     <classpathentry kind="src" path="specialpurpose/ebaystore/src"/-->
-    <classpathentry kind="src" path="specialpurpose/ecommerce/src"/>
+    <!--<classpathentry kind="src" path="specialpurpose/ecommerce/src"/>-->
     <!-- classpathentry kind="src" path="specialpurpose/example/src"/>
     <classpathentry kind="src" path="specialpurpose/googlebase/src"/>
     <classpathentry kind="src" path="specialpurpose/googlecheckout/src"/>
