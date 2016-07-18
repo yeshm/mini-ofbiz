@@ -17,24 +17,12 @@
  * under the License.
  */
 
-import org.ofbiz.base.util.FileUtil;
+import org.ofbiz.service.*;
 
-List logLines = [];
-try {
-    File logFile = FileUtil.getFile(logFileName);
-    logFile.eachLine { line ->
-        type = '';
-        if (line.contains(" |I| ")) {
-            type = 'INFO';
-        } else if (line.contains(" |W| ")) {
-            type = 'WARN';
-        } else if (line.contains(" |E| ")) {
-            type = 'ERROR';
-        } else if (line.contains(" |D| ")) {
-            type = 'DEBUG';
-        }
-        logLines.add([type: type, line:line]);
-    }
-} catch (Exception exc) {}
+context.invoicePaymentInfoList = []
 
-context.logLines = logLines;
+if (parameters.invoiceTypeId) { // it's not the initialisation but a real search request
+    serviceCtx = dispatcher.getDispatchContext().makeValidContext("getInvoicePaymentInfoListByDueDateOffset", "IN", parameters);
+    result = dispatcher.runSync("getInvoicePaymentInfoListByDueDateOffset", serviceCtx)
+    context.invoicePaymentInfoList = result.invoicePaymentInfoList 
+}

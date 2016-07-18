@@ -366,6 +366,10 @@ public class ContentManagementServices {
             }
         }
 
+        // Put contentId
+        if (UtilValidate.isNotEmpty(contentId)) {
+            contentAssoc.put("contentIdTo", contentId);
+        }
         // If parentContentIdTo or parentContentIdFrom exists, create association with newly created content
         if (Debug.infoOn()) {
             Debug.logInfo("CREATING contentASSOC contentAssocTypeId:" + contentAssocTypeId, null);
@@ -411,9 +415,11 @@ public class ContentManagementServices {
                 } else {
                     if (deactivateExisting) {
                         contentAssocExisting.put("thruDate", UtilDateTime.nowTimestamp());
+                    } else if (UtilValidate.isNotEmpty(context.get("thruDate"))) {
+                        contentAssocExisting.put("thruDate", (Timestamp)context.get("thruDate"));
                     }
                     ModelService contentAssocModel = dispatcher.getDispatchContext().getModelService("updateContentAssoc");
-                    Map<String, Object> ctx = contentAssocModel.makeValid(contentAssoc, "IN");
+                    Map<String, Object> ctx = contentAssocModel.makeValid(contentAssocExisting, "IN");
                     contentAssocContext.putAll(ctx);
                     thisResult = dispatcher.runSync("updateContentAssoc", contentAssocContext);
                     String errMsg = ServiceUtil.getErrorMessage(thisResult);

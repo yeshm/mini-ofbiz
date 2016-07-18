@@ -232,17 +232,27 @@ under the License.
         <field position="1" name="returnable" title="${uiLabelMap.ProductReturnable}" use-when="product==null">
             <drop-down allow-empty="true"><option key="Y" description="${uiLabelMap.CommonY}"/><option key="N" description="${uiLabelMap.CommonN}"/></drop-down>
         </field>
+        <field position="1" name="returnable" title="${uiLabelMap.ProductReturnable}" use-when="product!=null">
+            <display/>
+        </field>
         <field position="2" name="includeInPromotions" title="${uiLabelMap.ProductIncludePromotions}" use-when="product==null">
             <drop-down allow-empty="true"><option key="Y" description="${uiLabelMap.CommonY}"/><option key="N" description="${uiLabelMap.CommonN}"/></drop-down>
         </field>
-
+        <field position="2" name="includeInPromotions" title="${uiLabelMap.ProductIncludePromotions}" use-when="product!=null">
+            <display/>
+        </field>
         <field position="3" name="taxable" title="${uiLabelMap.ProductTaxable}" use-when="product==null">
             <drop-down allow-empty="true"><option key="Y" description="${uiLabelMap.CommonY}"/><option key="N" description="${uiLabelMap.CommonN}"/></drop-down>
+        </field>
+        <field position="3" name="taxable" title="${uiLabelMap.ProductTaxable}" use-when="product!=null">
+            <display/>
         </field>
         <field position="4" name="autoCreateKeywords" title="${uiLabelMap.ProductAutoCreateKeywords}" use-when="product==null">
             <drop-down allow-empty="true"><option key="Y" description="${uiLabelMap.CommonY}"/><option key="N" description="${uiLabelMap.CommonN}"/></drop-down>
         </field>
-
+        <field position="4" name="autoCreateKeywords" title="${uiLabelMap.ProductAutoCreateKeywords}" use-when="product!=null">
+            <display/>
+        </field>
         <field name="contentInfoText" title="${uiLabelMap.ProductContentInfoText}" widget-style="tooltip">
             <display description="${uiLabelMap.ProductNoteForContentOptions}" also-hidden="false"/>
         </field>
@@ -267,6 +277,9 @@ under the License.
         </field>
         <field name="orderDecimalQuantity" use-when="product==null">
             <drop-down allow-empty="true" ><option key="Y" description="${uiLabelMap.CommonY}"/><option key="N" description="${uiLabelMap.CommonN}"/></drop-down>
+        </field>
+        <field name="orderDecimalQuantity" use-when="product!=null">
+            <display/>
         </field>
         <sort-order>
             <field-group>
@@ -448,7 +461,7 @@ under the License.
         <field name="submitButton" title="${uiLabelMap.CommonCreate}" widget-style="smallSubmit"><submit button-type="button"/></field>
     </form>
     <form name="UpdateProductPrice" type="list" target="updateProductPrice" title="" list-name="productPrices"
-        odd-row-style="alternate-row" default-table-style="basic-table">
+        odd-row-style="alternate-row" default-table-style="basic-table" paginate-target="EditProductPrices">
         <auto-fields-service service-name="updateProductPrice" map-name="productPrice"/>
         <field name="productId"><hidden/></field>
         <field name="productPriceTypeId" title="${uiLabelMap.ProductPriceType}"><display-entity entity-name="ProductPriceType"/></field>
@@ -1760,6 +1773,23 @@ under the License.
         <field name="price"><display/></field>
     </form>
     <form name="ListProductAgreements" type="list" list-name="productAgreements"
+        odd-row-style="alternate-row" default-table-style="basic-table">
+        <field name="agreementId" widget-style="buttontext">
+            <hyperlink target="/accounting/control/EditAgreementItemProduct" target-type="inter-app" description="${agreementId}/${agreementItemSeqId}" also-hidden="false">
+                <parameter param-name="agreementId"/>
+                <parameter param-name="agreementItemSeqId"/>
+                <parameter param-name="productId"/>
+            </hyperlink>
+        </field>
+        <field name="partyIdTo"><display/></field>
+        <field name="agreementText"><display/></field>
+        <field name="description"><display/></field>
+        <field name="fromDate"><display/></field>
+        <field name="thruDate"><display/></field>
+        <field name="currencyUomId"><display/></field>
+        <field name="price"><display/></field>
+    </form>
+    <form name="ListCommissionAgreements" type="list" list-name="commissionAgreements"
         odd-row-style="alternate-row" default-table-style="basic-table">
         <field name="agreementId" widget-style="buttontext">
             <hyperlink target="/accounting/control/EditAgreementItemProduct" target-type="inter-app" description="${agreementId}/${agreementItemSeqId}" also-hidden="false">

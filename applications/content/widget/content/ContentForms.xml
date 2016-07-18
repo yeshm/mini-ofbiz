@@ -126,6 +126,7 @@ under the License.
             <hyperlink also-hidden="false" target-type="plain" description="${contentId}" target="javascript:set_value('${contentId}')"/>
         </field>
         <field name="contentName"><display/></field>
+        <field name="mimeTypeId"><display/></field>
         <field name="createdByUserLogin"><ignored/></field>
         <on-event-update-area event-type="paginate" area-id="search-results" area-target=""/>
     </form>
@@ -405,6 +406,7 @@ under the License.
             </entity-and>
         </actions>
         <auto-fields-service service-name="updateContentPurpose" default-field-type="display"/>
+        <field name="sequenceNum"><text /></field>
         <field name="submitButton" title="${uiLabelMap.CommonUpdate}" widget-style="smallSubmit"><submit button-type="button"/></field>
         <field name="deleteLink" title=" " widget-style="buttontext">
             <hyperlink also-hidden="false" description="${uiLabelMap.CommonDelete}" target="removeContentPurpose">

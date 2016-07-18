@@ -653,7 +653,7 @@ public class ShoppingCartEvents {
         try {
             GenericValue product = delegator.findOne("Product", UtilMisc.toMap("productId", productId), false); 
             //Reset shipment method information in cart only if shipping applies on product.
-            if (ProductWorker.shippingApplies(product)) {
+            if (UtilValidate.isNotEmpty(product) && ProductWorker.shippingApplies(product)) {
                 for (int shipGroupIndex = 0; shipGroupIndex < cart.getShipGroupSize(); shipGroupIndex++) {
                     String shipContactMechId = cart.getShippingContactMechId(shipGroupIndex);
                     if (UtilValidate.isNotEmpty(shipContactMechId)) {
@@ -1311,6 +1311,7 @@ public class ShoppingCartEvents {
         String termValueStr = request.getParameter("termValue");
         String termDaysStr = request.getParameter("termDays");
         String textValue = request.getParameter("textValue");
+        String description = request.getParameter("description");
 
         GenericValue termType = null;
         Delegator delegator = (Delegator) request.getAttribute("delegator");
@@ -1355,7 +1356,7 @@ public class ShoppingCartEvents {
 
         removeOrderTerm(request, response);
 
-        cart.addOrderTerm(termTypeId, termValue, termDays, textValue);
+        cart.addOrderTerm(termTypeId, null, termValue, termDays, textValue, description);
 
         return "success";
     }
@@ -1497,8 +1498,7 @@ public class ShoppingCartEvents {
                                     && ((String)adjustment.get("description")).startsWith("Tax adjustment due")) {
                                 cart.addAdjustment(adjustment);
                             }
-                        if ( adjustment.get("comments") != null
-                                && ((String)adjustment.get("comments")).startsWith("Added manually by")) {
+                        if ("Y".equals(adjustment.getString("isManual"))) {
                             cart.addAdjustment(adjustment);
                         }
                     }

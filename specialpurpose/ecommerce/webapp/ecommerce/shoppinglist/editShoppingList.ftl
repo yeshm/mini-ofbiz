@@ -83,7 +83,10 @@ under the License.
 
 <div class="screenlet">
         <div class="boxlink">
-            <a href="<@ofbizUrl>createEmptyShoppingList?productStoreId=${productStoreId}</@ofbizUrl>" class="submenutextright">${uiLabelMap.CommonCreateNew}</a>
+            <form id="createEmptyShoppingList" action="<@ofbizUrl>createEmptyShoppingList</@ofbizUrl>" method="post">
+               <input type="hidden" name="productStoreId" value="${productStoreId!}" />
+               <a href="javascript:document.getElementById('createEmptyShoppingList').submit();" class="submenutextright">${uiLabelMap.CommonCreateNew}</a>
+            </form>
         </div>
     <h3>&nbsp;${uiLabelMap.EcommerceShoppingLists}</h3>
     <div class="screenlet-body">
@@ -103,7 +106,10 @@ under the License.
           </form>
         <#else>
           <div>${uiLabelMap.EcommerceNoShoppingListsCreate}.</div>
-          <a href="<@ofbizUrl>createEmptyShoppingList?productStoreId=${productStoreId}</@ofbizUrl>" class="submenutextright">${uiLabelMap.CommonCreateNew}</a>
+          <form id="createEmptyShoppingList" action="<@ofbizUrl>createEmptyShoppingList</@ofbizUrl>" method="post">
+             <input type="hidden" name="productStoreId" value="${productStoreId!}" />
+             <input type="submit" name="submit" class="smallSubmit" value="${uiLabelMap.CommonCreateNew}"/>
+          </form>
         </#if>
     </div>
 </div>
@@ -500,7 +506,13 @@ under the License.
                     </td>
                     <td align="right">
                         <a href="#" onclick="javascript:TimestampSubmit(listform_${shoppingListItem.shoppingListItemSeqId});" class="buttontext">${uiLabelMap.CommonUpdate}</a>
-                        <a href="<@ofbizUrl>removeFromShoppingList?shoppingListId=${shoppingListItem.shoppingListId}&amp;shoppingListItemSeqId=${shoppingListItem.shoppingListItemSeqId}</@ofbizUrl>" class="buttontext">${uiLabelMap.CommonRemove}</a>
+                        <a href="javascript:document.removeFromShoppingList.submit();" class="buttontext">${uiLabelMap.CommonRemove}</a>
+                        <form name="removeFromShoppingList" method="post" action="<@ofbizUrl>removeFromShoppingList</@ofbizUrl>">
+                          <fieldset>
+                            <input type="hidden" name="shoppingListId" value="${shoppingListItem.shoppingListId!}">
+                            <input type="hidden" name="shoppingListItemSeqId" value="${shoppingListItem.shoppingListItemSeqId}">
+                          </fieldset>
+                        </form>
                       <#if isVirtual && productVariantAssocs?has_content>
                         <#assign replaceItemAction = "/replaceShoppingListItem/" + requestAttributes._CURRENT_VIEW_?if_exists>
                         <#assign addToCartAction = "/additem/" + requestAttributes._CURRENT_VIEW_?if_exists>
