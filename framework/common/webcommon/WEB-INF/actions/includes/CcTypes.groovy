@@ -16,25 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import org.ofbiz.entity.condition.EntityCondition;
+import org.ofbiz.entity.condition.EntityOperator;
 
-import org.ofbiz.base.util.FileUtil;
-
-List logLines = [];
-try {
-    File logFile = FileUtil.getFile(logFileName);
-    logFile.eachLine { line ->
-        type = '';
-        if (line.contains(" |I| ")) {
-            type = 'INFO';
-        } else if (line.contains(" |W| ")) {
-            type = 'WARN';
-        } else if (line.contains(" |E| ")) {
-            type = 'ERROR';
-        } else if (line.contains(" |D| ")) {
-            type = 'DEBUG';
-        }
-        logLines.add([type: type, line:line]);
-    }
-} catch (Exception exc) {}
-
-context.logLines = logLines;
+context.creditCardTypes = delegator.findList("Enumeration", EntityCondition.makeCondition("enumTypeId", EntityOperator.EQUALS, "CREDIT_CARD_TYPE"), 
+        ["enumId", "enumCode"] as Set, null, null, false);
