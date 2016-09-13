@@ -19,7 +19,8 @@ mini-ofbiz，延续了java语言的优势，业务逻辑可使用脚本语言(�
 
 访问，
 示例程序：localhost:8080/example， 管理工具：localhost:8080/webtools，用户名：admin，密码：ofbiz。
-elasticsearch-HQ: localhost:8080/hq已废弃。elasticsearch2.0+不太适合嵌入在系统内运行，建议单独运行elasticsearch，使用kibana进行查询分析
+
+demo: http://120.27.247.3:32782/example(http://120.27.247.3:32782/example)
 
 ## 交流 ##
 
