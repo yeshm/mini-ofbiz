@@ -1,4 +1,4 @@
-﻿http://wuliu.taobao.com/user/output_address.do?range=county
+http://wuliu.taobao.com/user/output_address.do?range=county
 采集时间： 2013-07-20
 
 <html><head>
