@@ -18,29 +18,18 @@
  *******************************************************************************/
 package org.ofbiz.service.job;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.ofbiz.base.config.GenericConfigException;
 import org.ofbiz.base.start.Start;
 import org.ofbiz.base.util.Assert;
 import org.ofbiz.base.util.Debug;
-import org.ofbiz.service.config.ServiceConfigUtil;
 import org.ofbiz.service.config.ServiceConfigListener;
+import org.ofbiz.service.config.ServiceConfigUtil;
 import org.ofbiz.service.config.model.ServiceConfig;
 import org.ofbiz.service.config.model.ThreadPool;
+
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Job poller. Queues and runs jobs.
@@ -50,7 +39,7 @@ public final class JobPoller implements ServiceConfigListener {
     public static final String module = JobPoller.class.getName();
     private static final AtomicInteger created = new AtomicInteger();
     private static final ConcurrentHashMap<String, JobManager> jobManagers = new ConcurrentHashMap<String, JobManager>();
-    private static final ThreadPoolExecutor executor = createThreadPoolExecutor();
+    public static final ThreadPoolExecutor executor = createThreadPoolExecutor();
     private static final JobPoller instance = new JobPoller();
 
     /**
