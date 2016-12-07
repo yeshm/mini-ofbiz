@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+    <description>ExtCommon Services</description>
+    <vendor></vendor>
+    <version>1.0</version>
+
+    <!-- 将淘宝地区级联数据导入数据库  -->
+    <service name="loadCHNGeoData" engine="groovy" location="component://extcommon/script/org/ofbiz/ext/geo/LoadCHNGeoData.groovy" transaction-timeout="6000000">
+        <attribute name="result" type="String" mode="OUT"/>
+    </service>
+
+    <!-- 将数据库中的地区级联导出形成geo.js文件 -->
+    <service name="generateGeoJs" engine="groovy" location="component://extcommon/script/org/ofbiz/ext/geo/GenerateGeoJs.groovy" transaction-timeout="6000000">
+        <attribute name="result" type="String" mode="OUT"/>
+    </service>
+
+    <service name="testService" engine="groovy" location="component://extcommon/script/org/ofbiz/ext/TestService.groovy" invoke="test" transaction-timeout="6000000">
+        <description>测试service</description>
+        <attribute name="result" type="String" mode="OUT"/>
+    </service>
+
+</services>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+    <description>UserLogin Services</description>
+    <version>1.0</version>
+
+    <service name="bizResetPassword" engine="groovy" location="component://extcommon/script/org/ofbiz/ext/common/UserLoginServices.groovy" invoke="resetPassword" auth="true">
+        <description>重置账号登录密码</description>
+        <attribute name="userLoginId" type="String" mode="IN" optional="false"/>
+        <attribute name="newPassword" type="String" mode="IN" optional="false"/>
+        <attribute name="newPasswordVerify" type="String" mode="IN" optional="false"/>
+    </service>
+
+    <service name="bizUpdatePassword" engine="groovy" auth="true" location="component://extcommon/script/org/ofbiz/ext/common/UserLoginServices.groovy" invoke="updatePassword">
+        <description>修改账号登录密码</description>
+        <implements service="bizResetPassword"/>
+        <attribute name="currentPassword" type="String" mode="IN" optional="false"/>
+    </service>
+</services>

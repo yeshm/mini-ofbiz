@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<services xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/services.xsd">
+    <description>Ext Services</description>
+    <vendor></vendor>
+    <version>1.0</version>
+
+    <service name="createUserOperateLog" engine="groovy" default-entity-name="ExtUserOperateLog" auth="false"
+             location="component://extcommon/script/org/ofbiz/ext/common/UserOperateLogServices.groovy"
+             invoke="createUserOperateLog">
+        <description>创建用户操作日志【 这个service有个场景需要特殊处理，用户修改自己密码的时候，传入的userLogin因为密码已经被修改，不被service引擎承认，因此需设定auth="false"
+            手动传入操作人的userLoginId，operateUserLoginId必填】
+        </description>
+        <auto-attributes mode="OUT" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="false"/>
+        <override name="operateDate" type="String" mode="IN" optional="true"/>
+        <override name="permissionId" type="String" mode="IN" optional="true"/>
+        <override name="operateUserLoginId" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <service name="bizSaveSystemConfig" engine="groovy" auth="false" default-entity-name="ExtSystemConfig"
+             location="component://extcommon/script/org/ofbiz/ext/common/SystemConfigServices.groovy"
+             invoke="saveSystemConfig">
+        <description>保存系统配置</description>
+        <attribute name="configTypeEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="configValue" type="String" mode="IN" optional="true"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <attribute name="configId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="bizCreateExtQrCode" engine="groovy" default-entity-name="ExtQrCode" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="createQrCode">
+        <description>创建二维码</description>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <auto-attributes mode="OUT" include="pk" optional="false"/>
+        <attribute mode="OUT" name="qrCodeSn" type="String" optional="false"/>
+    </service>
+
+    <service name="bizUpdateExtQrCode" engine="groovy" default-entity-name="ExtQrCode" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="updateExtQrCode">
+        <description>创建二维码</description>
+        <auto-attributes mode="IN" include="nonpk" optional="true"/>
+        <auto-attributes mode="INOUT" include="pk" optional="false"/>
+    </service>
+
+    <service name="bizBatchCreateQrCode" engine="groovy" default-entity-name="ExtQrCode" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="batchCreateQrCode">
+        <description>批量创建二维码</description>
+        <attribute name="qrCodeTypeEnumId" type="String" mode="IN" optional="false">
+            <description>二维码类型</description>
+        </attribute>
+        <attribute name="amount" type="Integer" mode="IN" optional="false">
+            <description>数量</description>
+        </attribute>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="exportStatusId" type="String" mode="IN" optional="true"/>
+        <attribute name="productStoreId" type="String" mode="IN" optional="true"/>
+        <attribute name="needShortUrl" type="String" mode="IN" optional="true"/>
+        <attribute name="qrCodeIds" type="List" mode="OUT" optional="false"/>
+    </service>
+    <service name="bizChangeQrCodeStatus" engine="groovy" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="changeQrCodeStatus">
+        <description>修改二维码状态</description>
+        <attribute name="qrCodeId" type="String" mode="IN" optional="false"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <service name="bizChangeQrCodeExportStatus" engine="groovy" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="changeQrCodeExportStatus">
+        <description>修改二维码导出状态</description>
+        <attribute name="qrCodeId" type="String" mode="IN" optional="false"/>
+        <attribute name="exportStatusId" type="String" mode="IN" optional="true"/>
+    </service>
+
+    <service name="bizGenerateQrCodeShortUrls" engine="groovy" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="generateQrCodeShortUrls">
+        <description>生成二维码短链接</description>
+        <attribute name="productStoreId" type="String" mode="IN" optional="false"/>
+        <attribute name="processCount" type="Integer" mode="OUT" optional="false"/>
+        <attribute name="generateCount" type="Integer" mode="OUT" optional="false"/>
+        <attribute name="processErrorMessage" type="String" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="bizUpdateExtQrCodeShortUrl" engine="groovy" auth="true"
+             location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
+             invoke="updateExtQrCodeShortUrl">
+        <description>修改二维码短链接</description>
+        <attribute name="qrCodeId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="productStoreId" type="String" mode="IN" optional="false"/>
+        <attribute name="shortUrl" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="bizJmsCleanAllCache" engine="jms" auth="true"
+             location="serviceMessenger"
+             invoke="bizCleanAllCache">
+        <description>广播清除集群的缓存</description>
+    </service>
+    <service name="bizCleanAllCache" engine="groovy" export="true" auth="false"
+             location="component://extcommon/script/org/ofbiz/ext/common/SystemConfigServices.groovy"
+             invoke="cleanAllCache">
+        <description>清除缓存</description>
+    </service>
+</services>
