@@ -48,9 +48,6 @@
         <relation type="one" rel-entity-name="UserLogin">
             <key-map field-name="operateUserLoginId" rel-field-name="userLoginId"/>
         </relation>
-        <relation type="one" fk-name="BIZ_PARTY" rel-entity-name="Party">
-            <key-map field-name="bizPartyId" rel-field-name="partyId"/>
-        </relation>
         <relation type="one" fk-name="SECUR_PERM" rel-entity-name="SecurityPermission">
             <key-map field-name="permissionId"/>
         </relation>
