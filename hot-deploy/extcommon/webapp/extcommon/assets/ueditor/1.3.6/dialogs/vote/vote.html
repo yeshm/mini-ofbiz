@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <link href="../../../../bui/1.0.13/css/dpl-min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../../../bui/1.0.13/css/bui-min.css" rel="stylesheet" type="text/css"/>
+    <link href="/bui_theme/assets/css/page.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="../../jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../../../../bui/1.0.13/bui-min.js"></script>
+    <script type="text/javascript" src="../../../../bui/1.0.13/config-min.js"></script>
+    <script type="text/javascript" src="../../../../js/bo.js"></script>
+</head>
+<body>
+<!--投票的弹出框页面-->
+<div class="box-content" style="overflow: auto;min-width: 500px;height: 450px; box-sizing: border-box;padding-left: 20px;margin-top: 0px;">
+    <div class="row-fluid">
+        <form id="voteForm" class="form-horizontal">
+            <div class="row">
+                <div class="control-group control-group-vertical span23">
+                    <label class="control-label">投票主题</label>
+                    <div class="controls span24">
+                        <input type="text" id="title" name="title" class="span12 span-width bui-form-field" data-rules="{required:true}"  maxlength="15" placeholder="十五字以内">
+                    </div>
+                </div>
+            </div><!--row-->
+
+            <div class="row">
+                <div class="control-group control-group-vertical span23">
+                    <label class="control-label">投票类型</label>
+                    <div class="controls span24">
+                        <div class="controls">
+                            <label class="radio fl"><input type="radio" id="radio" name="isRadio" checked="checked" value="1">投票为单选</label>
+                            <label class="radio fl ml20"><input id="multiple" type="radio" name="isRadio" value="2">投票为多选</label>
+                        </div>
+                    </div>
+                </div>
+            </div><!--row-->
+
+            <div class="row">
+                <div class="control-group control-group-vertical span23">
+                    <label class="control-label">投票截止时间</label>
+                    <div class="controls">
+                        <div clss="controls">
+                            <input name="endTime" id="endTime" type="text" class="calendar bui-form-field-date bui-form-field" data-rules="{required:true}" aria-disabled="false">
+                            <select name="endTime" id="endHour" class="bui-form-field-select bui-form-field" aria-disabled="false" aria-pressed="false">
+                                <option value="00">00</option>
+                                <option value="01">01</option>
+                                <option value="02">02</option>
+                                <option value="03">03</option>
+                                <option value="04">04</option>
+                                <option value="05">05</option>
+                                <option value="06">06</option>
+                                <option value="07">07</option>
+                                <option value="08">08</option>
+                                <option value="09">09</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+                            </select>
+                            <span>时</span>
+                            <select name="endTime" id="endMinutes" class="bui-form-field-select bui-form-field" aria-disabled="false" aria-pressed="false">
+                                <option value="00">00</option>
+                                <option value="05">05</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select>
+                            <span>分</span>
+                        </div>
+                    </div>
+                </div>
+            </div><!--row-->
+
+            <div class="row">
+                <div class="control-group control-group-vertical span23">
+                    <label class="control-label" style="width: 200px;">选项设置<span class="help-inline">(最多设置6个选项)</span></label>
+                </div>
+            </div><!--row-->
+
+            <div class="row">
+                <div class="control-group span23">
+                    <label class="control-label w50">选项1：</label>
+                    <div class="controls span20">
+                        <input id="option0" name="options" type="text" class="span13 span-width control-text bui-form-field" data-rules="{required:true}" maxlength="15" placeholder="十五字以内">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="control-group span23">
+                    <label class="control-label w50">选项2：</label>
+                    <div class="controls span20">
+                        <input id="option1" name="options" type="text" class="span13 span-width control-text bui-form-field" data-rules="{required:true}"  maxlength="15" placeholder="十五字以内">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="control-group span23">
+                    <label class="control-label w50">选项3：</label>
+                    <div class="controls span20">
+                        <input id="option2" name="options" type="text" class="span13 span-width control-text bui-form-field" maxlength="15" placeholder="十五字以内">
+                        <a href="#">删除</a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="javascript:" id="submitBtn" onclick="addItem(this)" class="ml50">添加选项</a>
+
+        </form>
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    var form;
+    var optionsNum=0;
+    $(function (){
+        BUI.use('bui/form', function (Form) {
+            app.form.registerRules(Form);
+            form = new Form.Form({
+                srcNode: '#voteForm',
+                callback: function (data) {
+                    if (app.ajaxHelper.handleAjaxMsg(data)) {
+                        app.showSuccess("保存成功");
+                    }
+                }
+            }).render();
+        });
+
+        $("input[id^='option']").each(function(obj){
+            optionsNum++;
+        });
+        setData(parent.window.voteData);
+    });
+    function addItem(obj){
+        optionsNum++;
+        $(obj).before('<div class="row" id="rowOption'+optionsNum+'">'+
+                '<div class="control-group span23">'+
+                '<label class="control-label w50">选项'+optionsNum+'：</label>'+
+                '<div class="controls span20">'+
+                '<input id="option'+optionsNum+'" name="options" type="text" class="span13 span-width control-text bui-form-field" maxlength="15" placeholder="十五字以内">'+
+                '<a href="#" onclick="return deleteItem(optionsNum)">&nbsp;删除</a>'+
+                '</div>'+
+                '</div>'+
+                '</div>');
+    }
+    function deleteItem(optionIndex){
+        $("#rowOption"+optionIndex).remove();
+        optionsNum--;
+        return false;
+    }
+    function removeElement(_element){
+        _element = document.getElementById('rowOption'+_element)
+        var _parentElement = _element.parentNode;
+        if(_parentElement){
+            _parentElement.removeChild(_element);
+            optionsNum--;
+        }
+    }
+    function getData(){
+        if (!form.isValid()) {
+            return false;
+        }
+       var voteFormData = $("#voteForm").serializeJson();
+        var voteData = BUI.JSON.stringify(voteFormData);
+//        alert(voteData);
+        return voteData;
+    }
+
+    function setData(jsonData){
+        if(jsonData){
+            jsonData = eval('('+jsonData+')');
+            //暂时这样设置不知道有没有更好的办法
+            form.setFieldValue("title",jsonData.title);
+            if(parseInt(jsonData.isRadio) > 1){
+                $("#multiple").attr("checked","checked");
+            }
+            $("#endTime").val(jsonData.endTime[0]);
+            $("#endHour").val(jsonData.endTime[1]);
+            $("#endMinutes").val(jsonData.endTime[2]);
+            for(var i = 0;i < jsonData.options.length;i++){
+                if((i+1) <= optionsNum){
+                    $("#option"+i).val(jsonData.options[i]);
+                }else{
+                    $("#submitBtn").before('<div class="row">'+
+                            '<div class="control-group span23">'+
+                            '<label class="control-label w50">选项'+(optionsNum+1)+'：</label>'+
+                            '<div class="controls span20">'+
+                            '<input id="option'+optionsNum+'" name="options" type="text" class="span13 span-width control-text bui-form-field" maxlength="15" placeholder="十五字以内">'+
+                            '<a href="#">&nbsp;删除</a>'+
+                            '</div>'+
+                            '</div>'+
+                            '</div>');
+                    optionsNum++;
+                    $("#option"+i).val(jsonData.options[i]);
+                }
+            }
+        }
+
+    }
+</script>
+</body>
+</html>

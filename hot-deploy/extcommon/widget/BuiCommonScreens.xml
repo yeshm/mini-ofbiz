@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="BuiMainDecorator">
+        <section>
+            <actions>
+                <set field="layoutSettings.styleSheets[+0]" value="/ext/assets/bui/1.0.13/css/default/dpl.css"/>
+                <set field="layoutSettings.styleSheets[+1]" value="/ext/assets/bui/1.0.13/css/default/bui.css"/>
+                <set field="layoutSettings.styleSheets[+2]" value="/bui_theme/assets/css/main.css"/>
+
+                <set field="layoutSettings.javaScripts[+0]" value="/images/jquery/jquery-1.10.2.min.js"/>
+                <set field="layoutSettings.javaScripts[+1]" value="/ext/assets/bui/1.0.13/seed-min.js"/>
+                <set field="layoutSettings.javaScripts[+2]" value="/ext/assets/bui/1.0.13/config.js"/>
+                <set field="layoutSettings.javaScripts[+3]" value="/ext/assets/js/jquery.cookie.js"/>
+                <set field="layoutSettings.javaScripts[+4]" value="/bui_theme/assets/js/buimain.js"/>
+                <set field="layoutSettings.javaScripts[+5]" value="/ext/assets/js/bo.js"/>
+                <set field="themePath" value="/bui_theme/" global="true"/>
+            </actions>
+            <widgets>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/header.ftl"/>
+                    </html>
+                </platform-specific>
+                <decorator-section-include name="body"/>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/mainMessages.ftl"/>
+                    </html>
+                </platform-specific>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/mainFooter.ftl"/>
+                    </html>
+                </platform-specific>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="BuiPageDecorator">
+        <section>
+            <actions>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+
+                <set field="layoutSettings.styleSheets[+0]" value="/ext/assets/bui/1.0.13/css/default/dpl.css"/>
+                <set field="layoutSettings.styleSheets[+1]" value="/ext/assets/bui/1.0.13/css/default/bui.css"/>
+                <set field="layoutSettings.styleSheets[+2]" value="/bui_theme/assets/css/page-custom.css"/>
+                <set field="layoutSettings.styleSheets[+3]" value="/bui_theme/assets/css/page.css"/>
+
+                <set field="layoutSettings.javaScripts[+0]" value="/images/jquery/jquery-1.10.2.min.js"/>
+                <set field="layoutSettings.javaScripts[+1]" value="/ext/assets/bui/1.0.13/seed-min.js"/>
+                <set field="layoutSettings.javaScripts[+2]" value="/ext/assets/bui/1.0.13/config.js"/>
+                <set field="layoutSettings.javaScripts[+3]" value="/ext/assets/bui/1.0.13/common/page.js"/>
+                <set field="layoutSettings.javaScripts[+4]" value="/ext/assets/bui/1.0.13/common/search.js"/>
+                <set field="layoutSettings.javaScripts[+5]" value="/ext/assets/js/jquery.cookie.js"/>
+                <set field="layoutSettings.javaScripts[+6]" value="/ext/assets/js/bo.js"/>
+                <set field="themePath" value="/bui_theme/" global="true"/>
+            </actions>
+            <widgets>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/header.ftl"/>
+                    </html>
+                </platform-specific>
+                <container style="container">
+                    <section>
+                        <widgets>
+                            <decorator-section-include name="body"/>
+                        </widgets>
+                    </section>
+                </container>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/pageFooter.ftl"/>
+                    </html>
+                </platform-specific>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="ExtStatisticsPageDecorator">
+        <section>
+            <actions>
+                <property-map resource="CommonUiLabels" map-name="uiLabelMap" global="true"/>
+
+                <set field="layoutSettings.styleSheets[+0]" value="/ext/assets/bui/1.0.13/css/default/dpl-min.css"/>
+                <set field="layoutSettings.styleSheets[+1]" value="/ext/assets/bui/1.0.13/css/default/bui-min.css"/>
+                <set field="layoutSettings.styleSheets[+2]" value="/bui_theme/assets/css/page.css"/>
+                <set field="layoutSettings.styleSheets[+3]" value="/ext/assets/svgmap/css/svgmap.css?2014-02-25-10"/>
+                <set field="layoutSettings.styleSheets[+4]" value="/ext/assets/svgmap/tongji/overview_sole.css?2014-02-25-10"/>
+
+                <set field="layoutSettings.javaScripts[+0]" value="/images/jquery/jquery-1.10.2.min.js"/>
+                <set field="layoutSettings.javaScripts[+1]" value="/ext/assets/js/jquery.cookie.js"/>
+                <set field="layoutSettings.javaScripts[+2]" value="/ext/assets/svgmap/js/raphael-min.js"/>
+                <set field="layoutSettings.javaScripts[+3]" value="/ext/assets/svgmap/js/chinaMapConfig.js"/>
+                <set field="layoutSettings.javaScripts[+4]" value="/ext/assets/svgmap/js/map.js"/>
+
+                <set field="layoutSettings.javaScripts[+5]" value="/ext/assets/bui/1.0.13/seed-min.js?t=201401242343"/>
+                <set field="layoutSettings.javaScripts[+6]" value="/ext/assets/bui/1.0.13/config.js"/>
+                <set field="layoutSettings.javaScripts[+7]" value="/ext/assets/bui/1.0.13/common/page.js"/>
+                <set field="layoutSettings.javaScripts[+8]" value="/ext/assets/js/bo.js"/>
+            </actions>
+            <widgets>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/header.ftl"/>
+                    </html>
+                </platform-specific>
+                <container style="container">
+                    <section>
+                        <widgets>
+                            <decorator-section-include name="body"/>
+                        </widgets>
+                    </section>
+                </container>
+                <platform-specific>
+                    <html>
+                        <html-template location="component://extcommon/webapp/extcommon/includes/bui/pageFooter.ftl"/>
+                    </html>
+                </platform-specific>
+            </widgets>
+        </section>
+    </screen>
+</screens>
