@@ -1,0 +1,48 @@
+.msg-input, .cover-area, .msg-txta {
+    background-color: #fff;
+    border: 1px solid #d3d3d3;
+    color: #666;
+    max-width: 480px;
+    padding: 2px 8px;
+    width: 480px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.cover-area {
+    max-width: 496px;
+    padding: 0;
+    width: 400px;
+    position: relative;
+}
+
+.cover-hd {
+    padding: 2px 8px 3px;
+    position: relative;
+}
+
+.upload-tip {
+    color: #666;
+    font-size: 12px;
+    line-height: 28px;
+    text-align: right;
+    position: absolute;
+    top: -3px;
+    right: 8px;
+}
+
+.cover-bd {
+    border-top: 1px solid #ccc;
+    overflow: hidden;
+    padding: 8px;
+}
+
+.cover-bd img {
+    width: 100px;
+}
+
+.cover-del {
+    font-size: 14px;
+    margin-left: 5px;
+}

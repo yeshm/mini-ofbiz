@@ -1,9 +1,9 @@
 package org.miniofbiz.ext.biz;
 
 
+import org.miniofbiz.ext.util.UploadUtil;
 import org.ofbiz.base.util.GeneralRuntimeException;
 import org.ofbiz.base.util.UtilValidate;
-import org.miniofbiz.ext.util.UploadUtil;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -291,38 +291,7 @@ public class ImageWorker {
         String saveName = UploadUtil.generateStoreFilePathPrefix("image", "Company") + ".jpg";
         String fullName = savePath + saveName;
         imgWorker.writeImageLocal(fullName, bgImg);
+
         return saveName;
-
     }
-
-    public static void main(String[] args) {
-
-        ImageWorker imgWorker = new ImageWorker();
-
-        BufferedImage bgImg = imgWorker.loadImageLocal("E:\\img_test\\background.jpg");
-        BufferedImage qrImg = imgWorker.loadImageUrl("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQHm7zoAAAAAAAAAASxodHRwOi8vd2VpeGluLnFxLmNvbS9xL1drekpzUXZsY2E0SXRhajFhR0FvAAIEI1OnVQMEAAAAAA==");
-        BufferedImage headImg = imgWorker.loadImageLocal("E:\\img_test\\head.png");
-
-        Object[] contentList = new Object[3];
-
-        contentList[0] = "当用户发送消息给公众号时。";
-        contentList[1] = "当用户发送消息给公众号时。";
-        contentList[2] = "当用户发送消息给公众号时。";
-
-        //坐标 (200,700)
-        BufferedImage textImg = imgWorker.modifyImage(bgImg, contentList, 0xC8, 0x2BC, false);
-        // 把二维码图片改成227*227大小
-        BufferedImage resizeQrImg = imgWorker.modifyImageSize(qrImg, 0xE3, 0xE3);
-        // 合成带二维码的图片 坐标(150,290)
-        BufferedImage tmpQrImg = imgWorker.modifyImagetogeter(textImg, resizeQrImg, 0x96, 0x122);
-        // 把头像图片改成75*75大小
-        BufferedImage resizeHeadImg = imgWorker.modifyImageSize(headImg, 0X4B, 0X4B);
-        // 合成头像图片
-        BufferedImage tmpHeadImg = imgWorker.modifyImagetogeter(tmpQrImg, resizeHeadImg, 0x63, 0x2A4);
-        // 构造目标图片
-        imgWorker.writeImageLocal("E:\\img_test\\new.jpg", tmpHeadImg);
-
-        System.out.println("success");
-    }
-
 }

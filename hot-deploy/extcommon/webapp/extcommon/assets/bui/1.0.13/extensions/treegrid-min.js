@@ -1,0 +1,1 @@
+define("bui/extensions/treegrid",["bui/common","jquery","bui/tree","bui/list","bui/data","bui/grid","bui/mask","bui/toolbar","bui/menu"],function(i,e,u){var r=(i("bui/common"),i("bui/tree")),n=i("bui/grid"),b=n.Grid.extend([r.Mixin],{},{ATTRS:{iconContainer:{value:".bui-grid-cell-inner"}}},{xclass:"tree-grid"});u.exports=b});

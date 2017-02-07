@@ -94,7 +94,6 @@ under the License.
         <antcall target="clean-xtra"/>
         <antcall target="clean-catalina"/>
         <antcall target="clean-cache"/>
-        <antcall target="clean-tempfiles"/>
         <antcall target="clean-search-indexes"/>
         <!-- FIXME: clean-downloads introduces some issues: with cobertura (on Windows can't be deleted, not sure why), 
                     but especially with postgresql drivers -->

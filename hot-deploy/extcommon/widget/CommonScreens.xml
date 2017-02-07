@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<screens xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/widget-screen.xsd">
+
+    <screen name="ExtMainDecorator">
+        <section>
+            <widgets>
+                <decorator-screen name="BuiMainDecorator" location="component://extcommon/widget/BuiCommonScreens.xml">
+                    <decorator-section name="body">
+                        <decorator-section-include name="body"/>
+                    </decorator-section>
+                </decorator-screen>
+            </widgets>
+        </section>
+    </screen>
+
+    <screen name="ExtPageDecorator">
+        <section>
+            <widgets>
+                <section>
+                    <widgets>
+                        <decorator-screen name="BuiPageDecorator" location="component://extcommon/widget/BuiCommonScreens.xml">
+                            <decorator-section name="body">
+                                <decorator-section-include name="body"/>
+                            </decorator-section>
+                        </decorator-screen>
+                    </widgets>
+                </section>
+            </widgets>
+        </section>
+    </screen>
+</screens>
