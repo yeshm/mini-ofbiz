@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <test-suite suite-name="ExtCommontests"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/test-suite.xsd">
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ofbiz.apache.org/dtds/test-suite.xsd">
 
-
+    <test-case case-name="ext-common-tests">
+        <junit-test-suite class-name="org.miniofbiz.ext.test.ExtTests"/>
+    </test-case>
 </test-suite>

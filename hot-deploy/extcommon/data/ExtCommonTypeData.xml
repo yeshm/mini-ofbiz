@@ -19,25 +19,6 @@
     <StatusItem description="待提交" sequenceId="01" statusCode="WAITING" statusId="APPROVE_WAITING" statusTypeId="APPROVE_STATUS"/>
     <StatusItem description="待审核" sequenceId="02" statusCode="PENDING" statusId="APPROVE_PENDING" statusTypeId="APPROVE_STATUS"/>
     <StatusItem description="审核通过" sequenceId="03" statusCode="PASSED" statusId="APPROVE_PASSED" statusTypeId="APPROVE_STATUS"/>
-    <StatusItem description="已转账" sequenceId="04" statusCode="TRANSED" statusId="APPROVE_TRANSED" statusTypeId="APPROVE_STATUS"/>
-    <StatusItem description="已完成" sequenceId="05" statusCode="FINISHED" statusId="APPROVE_FINISHED" statusTypeId="APPROVE_STATUS"/>
     <StatusItem description="拒绝" sequenceId="06" statusCode="REFUSED" statusId="APPROVE_REFUSED" statusTypeId="APPROVE_STATUS"/>
     <StatusItem description="删除" sequenceId="07" statusCode="DELETED" statusId="APPROVE_DELETED" statusTypeId="APPROVE_STATUS"/>
-    <StatusItem description="取消" sequenceId="08" statusCode="CANCLE" statusId="APPROVE_CANCLE" statusTypeId="APPROVE_STATUS"/>
-
-    <ExtContentType description="无" hasTable="N" parentTypeId="" contentTypeId="_NA_"/>
-
-    <EnumerationType description="二维码应用类型" enumTypeId="QR_CODE_TYPE" hasTable="N" parentTypeId=""/>
-    <Enumeration description="系统" enumCode="01" enumId="QR_CODE_TYPE_SYSTEM" sequenceId="01" enumTypeId="QR_CODE_TYPE"/>
-    <Enumeration description="普通" enumCode="02" enumId="QR_CODE_TYPE_GENERAL" sequenceId="02" enumTypeId="QR_CODE_TYPE"/>
-    <Enumeration description="充值卡二维码" enumCode="03" enumId="QR_CODE_TYPE_CARD" sequenceId="03" enumTypeId="QR_CODE_TYPE"/>
-    <Enumeration description="销售员专属二维码" enumCode="04" enumId="QR_CODE_TYPE_SELLER" sequenceId="04" enumTypeId="QR_CODE_TYPE"/>
-    <Enumeration description="店员绑定二维码" enumCode="05" enumId="CLERK_BINDING" sequenceId="05" enumTypeId="QR_CODE_TYPE"/>
-    <Enumeration description="活动二维码" enumCode="06" enumId="ACTIVITY" sequenceId="06" enumTypeId="QR_CODE_TYPE"/>
-    <Enumeration description="签到二维码" enumCode="07" enumId="SIGN" sequenceId="07" enumTypeId="QR_CODE_TYPE"/>
-
-    <StatusType description="二维码的状态" hasTable="N" parentTypeId="" statusTypeId="QR_CODE_STATUS"/>
-    <StatusItem description="未绑定" sequenceId="01" statusCode="QR_CODE_UNBOUND" statusId="QR_CODE_UNBOUND" statusTypeId="QR_CODE_STATUS"/>
-    <StatusItem description="已绑定" sequenceId="02" statusCode="QR_CODE_BOUND" statusId="QR_CODE_BOUND" statusTypeId="QR_CODE_STATUS"/>
-    <StatusItem description="已废除" sequenceId="03" statusCode="QR_CODE_DELETED" statusId="QR_CODE_DELETED" statusTypeId="QR_CODE_STATUS"/>
 </entity-engine-xml>
