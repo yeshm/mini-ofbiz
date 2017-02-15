@@ -2,6 +2,10 @@
 
 OFBIZ_HOME="$( cd -P "$( dirname "$0" )" && pwd )"/..
 
+if [ ! -d "$OFBIZ_HOME/runtime/output" ]; then
+    mkdir "$OFBIZ_HOME/runtime/output"
+fi
+
 #1.clean all
 ant clean-all
 
