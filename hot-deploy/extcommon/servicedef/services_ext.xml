@@ -22,27 +22,42 @@
              location="component://extcommon/script/org/ofbiz/ext/common/SystemConfigServices.groovy"
              invoke="saveSystemConfig">
         <description>保存系统配置</description>
-        <attribute name="configTypeEnumId" type="String" mode="IN" optional="true"/>
-        <attribute name="configValue" type="String" mode="IN" optional="true"/>
-        <auto-attributes mode="IN" include="nonpk" optional="true"/>
-        <attribute name="configId" type="String" mode="OUT" optional="false"/>
+        <auto-attributes mode="OUT" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true">
+            <exclude field-name="createdDate"/>
+            <exclude field-name="createdByUserLogin"/>
+            <exclude field-name="lastModifiedDate"/>
+            <exclude field-name="lastModifiedByUserLogin"/>
+        </auto-attributes>
+        <override name="configTypeEnumId" optional="false"/>
+        <override name="configTypeEnconfigValueumId" optional="false"/>
     </service>
 
     <service name="bizCreateExtQrCode" engine="groovy" default-entity-name="ExtQrCode" auth="true"
              location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
              invoke="createQrCode">
         <description>创建二维码</description>
-        <auto-attributes mode="IN" include="nonpk" optional="true"/>
         <auto-attributes mode="OUT" include="pk" optional="false"/>
-        <attribute mode="OUT" name="qrCodeSn" type="String" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true">
+            <exclude field-name="createdDate"/>
+            <exclude field-name="createdByUserLogin"/>
+            <exclude field-name="lastModifiedDate"/>
+            <exclude field-name="lastModifiedByUserLogin"/>
+        </auto-attributes>
+        <override name="qrCodeSn" optional="false"/>
     </service>
 
     <service name="bizUpdateExtQrCode" engine="groovy" default-entity-name="ExtQrCode" auth="true"
              location="component://extcommon/script/org/ofbiz/ext/common/QrCodeServices.groovy"
              invoke="updateExtQrCode">
         <description>创建二维码</description>
-        <auto-attributes mode="IN" include="nonpk" optional="true"/>
         <auto-attributes mode="INOUT" include="pk" optional="false"/>
+        <auto-attributes mode="IN" include="nonpk" optional="true">
+            <exclude field-name="createdDate"/>
+            <exclude field-name="createdByUserLogin"/>
+            <exclude field-name="lastModifiedDate"/>
+            <exclude field-name="lastModifiedByUserLogin"/>
+        </auto-attributes>
     </service>
 
     <service name="bizBatchCreateQrCode" engine="groovy" default-entity-name="ExtQrCode" auth="true"
